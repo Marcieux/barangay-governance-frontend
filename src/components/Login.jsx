@@ -19,10 +19,8 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded shadow-md w-[400px]"
       >
-        <h2 className="mb-4 text-xl font-bold text-center">Login</h2>
-
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+          <label className="block mb-2 text-sm font-medium text-red-500">
             Username
           </label>
 
@@ -30,13 +28,13 @@ export default function Login() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded outline-none"
+            className="w-full p-2 border border-red-500 rounded outline-none  text-sm"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block mb-2 text-sm font-medium text-gray-700">
+          <label className="block mb-2 text-sm font-medium text-red-500">
             Password
           </label>
 
@@ -44,14 +42,14 @@ export default function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded outline-none"
+            className="w-full p-2 border border-red-500 rounded outline-none text-sm"
             required
           />
         </div>
 
         <button
           type="submit"
-          className="w-full p-2 bg-red-500 text-white rounded hover:bg-red-600"
+          className="w-full p-2 font-semibold text-red-500 rounded"
         >
           Login
         </button>
