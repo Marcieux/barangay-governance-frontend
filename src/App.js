@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import axios from "axios";
-import Login from "./components/Login";
-import King from "./components/King";
+import Login from "./pages/Login";
+import King from "./pages/King";
 
 function App() {
   useEffect(() => {
