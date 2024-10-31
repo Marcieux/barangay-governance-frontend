@@ -19,7 +19,7 @@ export default function KingSearchBox(props) {
         King
       </label>
       <div className="flex gap-5">
-        {barangayWithKing?.king || isKingAdded ? (
+        {barangayWithKing?.king_id || isKingAdded ? (
           <input
             type="text"
             value={barangayWithKing?.king_name || kingName}
@@ -39,17 +39,17 @@ export default function KingSearchBox(props) {
         <button
           onClick={handleAddKing}
           className={`px-4 py-2 font-semibold rounded text-sm ${
-            barangayWithKing?.king || !king
+            barangayWithKing?.king_id || !king
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "text-red-500"
           }`}
-          disabled={barangayWithKing?.king || !king}
+          disabled={barangayWithKing?.king_id || !king}
         >
           Add
         </button>
       </div>
       {/* Suggestions for king search */}
-      {suggestions.length > 0 && !barangayWithKing?.king && (
+      {suggestions.length > 0 && !barangayWithKing?.king_id && (
         <ul className="border border-gray-200 max-h-40 overflow-y-auto absolute bg-white w-[350px] z-10 mt-1">
           {suggestions.map((person) => (
             <li

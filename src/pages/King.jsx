@@ -78,7 +78,7 @@ export default function King() {
     ) {
       try {
         await axios.put(`http://localhost:3001/barangay/${selectedBarangay}`, {
-          king,
+          king_id: king,
           king_name: kingName,
         });
         alert("King has been added successfully!");
