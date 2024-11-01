@@ -15,12 +15,14 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />}/>
-        <Route path="/encodename/king" element={<King />}/>
-      </Routes>
-    </BrowserRouter>
+    <main className="min-h-screen flex items-center justify-center bg-red-500">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/encodename/king" element={<King />} />
+        </Routes>
+      </BrowserRouter>
+    </main>
   );
 }
 
