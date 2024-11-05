@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BarangayProvider } from "./contexts/BarangayContext";
 import axios from "axios";
 import Login from "./pages/Login";
 import King from "./pages/King";
@@ -15,14 +16,16 @@ function App() {
   }, []);
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-red-500">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/encodename/king" element={<King />} />
-        </Routes>
-      </BrowserRouter>
-    </main>
+    <BarangayProvider>
+      <main className="min-h-screen flex items-center justify-center bg-red-500">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/encodename/king" element={<King />} />
+          </Routes>
+        </BrowserRouter>
+      </main>
+    </BarangayProvider>
   );
 }
 

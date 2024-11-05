@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import BarangayDropdown from "../components/BarangayDropdown";
 import KingSearchBox from "../components/KingSearchBox";
 import KingNumber from "../components/KingNumber";
-
+import BarangayContext from "../contexts/BarangayContext";
+import { useFilteredPeople } from "../hooks/useBarangayData";
 export default function King() {
-  // State for storing barangays and people data
-  const [barangays, setBarangays] = useState([]);
-  const [people, setPeople] = useState([]);
-
   // State for managing selected barangay, king, and search
-  const [selectedBarangay, setSelectedBarangay] = useState("");
-  const [filteredPeople, setFilteredPeople] = useState([]);
+  const {
+    barangays,
+    people,
+    selectedBarangay,
+    setSelectedBarangay,
+    setBarangays,
+  } = useContext(BarangayContext);
+  // Filter people based on selected barangay
+  const filteredPeople = useFilteredPeople();
+
   const [selectedPerson, setSelectedPerson] = useState("");
   const [king, setKing] = useState(null);
   const [kingName, setKingName] = useState("");
@@ -21,38 +26,13 @@ export default function King() {
   // UI states
   const [isKingAdded, setIsKingAdded] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [showKingNumber, setShowKingNumber] = useState(true);
-
-  // Fetch barangays and people data on mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [barangaysRes, peopleRes] = await Promise.all([
-          axios.get("http://localhost:3001/barangay"),
-          axios.get("http://localhost:3001/people"),
-        ]);
-        setBarangays(barangaysRes.data);
-        setPeople(peopleRes.data);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
-    };
-    fetchData();
-  }, []);
-
-  // Filter people based on selected barangay
-  useEffect(() => {
-    const filtered = selectedBarangay
-      ? people.filter((person) => person.barangay === selectedBarangay)
-      : [];
-    setFilteredPeople(filtered);
-  }, [selectedBarangay, people]);
+  const [showKingNumber, setShowKingNumber] = useState(false);
 
   // Handle barangay selection and reset relevant state
   const handleBarangayChange = (barangay) => {
     setSelectedBarangay(barangay);
     setIsKingAdded(false);
-    setShowKingNumber(true);
+    setShowKingNumber(false);
     setIsOpen(false);
 
     const selected = barangays.find((b) => b.barangay_name === barangay);
@@ -77,6 +57,10 @@ export default function King() {
       )
     ) {
       try {
+        await axios.put(`http://localhost:3001/people/${king}`, {
+          role: "king",
+        });
+
         await axios.put(`http://localhost:3001/barangay/${selectedBarangay}`, {
           king_id: king,
           king_name: kingName,
@@ -100,7 +84,6 @@ export default function King() {
   // Reset form state
   const resetForm = () => {
     setKing(null);
-    setFilteredPeople([]);
     setIsKingAdded(false);
   };
 
@@ -139,7 +122,7 @@ export default function King() {
     setKingName(person.name);
     setSearchText(person.name);
     setSuggestions([]);
-    setShowKingNumber(true);
+    setShowKingNumber(false);
   };
 
   // Check if the selected barangay already has a king number
