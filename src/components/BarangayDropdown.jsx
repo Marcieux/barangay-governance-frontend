@@ -9,7 +9,7 @@ export default function BarangayDropdown(props) {
       </label>
       <div className="relative" onClick={() => setIsOpen(!isOpen)}>
         <div className="flex items-center justify-between w-full p-2 border border-red-500 rounded cursor-pointer text-sm">
-          {selectedBarangay || "Choose a Barangay"}{" "}
+          {selectedBarangay ? selectedBarangay.barangay_name : "Choose a Barangay"}{" "}
           <i className="fa-solid fa-caret-down"></i>
         </div>
         {isOpen && (
@@ -17,7 +17,7 @@ export default function BarangayDropdown(props) {
             {barangays.map((barangay) => (
               <div
                 key={barangay._id}
-                onClick={() => onBarangayChange(barangay.barangay_name)}
+                onClick={() => onBarangayChange(barangay)}
                 className="p-2 cursor-pointer text-sm hover:bg-gray-100"
               >
                 {barangay.barangay_name}

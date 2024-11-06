@@ -45,20 +45,20 @@ export default function King() {
   const handleAddKing = async () => {
     if (
       window.confirm(
-        `Are you sure you want to set '${kingName}' as king of '${selectedBarangay}'?`
+        `Are you sure you want to set '${kingName}' as king of '${selectedBarangay.barangay_name}'?`
       )
     ) {
       try {
         await axios.put(`http://localhost:3001/people/${king}`, {
           role: "king",
+          barangay_id: selectedBarangay._id
         });
 
-        await axios.put(`http://localhost:3001/barangay/${selectedBarangay}`, {
+        await axios.put(`http://localhost:3001/barangay/${selectedBarangay._id}`, {
           king_id: king,
           king_name: kingName,
         });
         alert("King has been added successfully!");
-
         const { data } = await axios.get("http://localhost:3001/barangay");
         setBarangays(data);
 
@@ -131,7 +131,7 @@ export default function King() {
         />
         <KingSearchBox
           barangayWithKing={barangays.find(
-            (b) => b.barangay_name === selectedBarangay
+            (b) => b._id === selectedBarangay._id
           )}
           searchText={searchText}
           handleSearchChange={handleSearchChange}

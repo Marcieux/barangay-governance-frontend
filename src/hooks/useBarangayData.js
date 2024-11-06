@@ -8,7 +8,7 @@ export const useFilteredPeople = () => {
   useEffect(() => {
     setFilteredPeople(
       selectedBarangay
-        ? people.filter((person) => person.barangay === selectedBarangay)
+        ? people.filter((person) => person.barangay === selectedBarangay.barangay_name)
         : []
     );
   }, [selectedBarangay, people]);
