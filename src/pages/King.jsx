@@ -1,55 +1,47 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import BarangayDropdown from "../components/BarangayDropdown";
 import KingSearchBox from "../components/KingSearchBox";
 import KingNumber from "../components/KingNumber";
 import BarangayContext from "../contexts/BarangayContext";
 import { useFilteredPeople } from "../hooks/useBarangayData";
-export default function King() {
-  // State for managing selected barangay, king, and search
-  const {
-    barangays,
-    people,
-    selectedBarangay,
-    setSelectedBarangay,
-    setBarangays,
-  } = useContext(BarangayContext);
-  // Filter people based on selected barangay
-  const filteredPeople = useFilteredPeople();
 
+export default function King() {
+  const { barangays, selectedBarangay, setSelectedBarangay, setBarangays } =
+    useContext(BarangayContext);
+
+  const filteredPeople = useFilteredPeople();
   const [selectedPerson, setSelectedPerson] = useState("");
   const [king, setKing] = useState(null);
   const [kingName, setKingName] = useState("");
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-  // UI states
   const [isKingAdded, setIsKingAdded] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [showKingNumber, setShowKingNumber] = useState(false);
+  const [isKingNumberAssigned, setIsKingNumberAssigned] = useState(false);
+  const [canSwitchBarangay, setCanSwitchBarangay] = useState(true);
 
-  // Handle barangay selection and reset relevant state
-  const handleBarangayChange = (barangay) => {
-    setSelectedBarangay(barangay);
-    setIsKingAdded(false);
-    setShowKingNumber(false);
-    setIsOpen(false);
-
-    const selected = barangays.find((b) => b.barangay_name === barangay);
-    if (selected) {
-      setKing(selected.king || null);
-      setKingName(selected.king_name || "");
-      setSelectedPerson(selected.king || "");
+  useEffect(() => {
+    if (king && !isKingNumberAssigned) {
+      setCanSwitchBarangay(false);
     } else {
-      setKing(null);
-      setKingName("");
-      setSelectedPerson("");
+      setCanSwitchBarangay(true);
     }
+  }, [king, isKingNumberAssigned]);
 
-    setSearchText("");
+  const handleBarangayChange = (barangay) => {
+    if (!canSwitchBarangay) {
+      alert(
+        "Please assign a number to the added king before switching barangays."
+      );
+      return;
+    }
+    setSelectedBarangay(barangay);
+    resetForm();
   };
 
-  // Add king to the selected barangay
   const handleAddKing = async () => {
     if (
       window.confirm(
@@ -67,13 +59,13 @@ export default function King() {
         });
         alert("King has been added successfully!");
 
-        // Refresh barangays data to reflect changes
         const { data } = await axios.get("http://localhost:3001/barangay");
         setBarangays(data);
 
         setSelectedPerson(king);
+        setIsKingAdded(true);
         setShowKingNumber(true);
-        resetForm();
+        setIsKingNumberAssigned(false);
       } catch (err) {
         console.error("Error adding king:", err);
         alert("An error occurred while adding the king.");
@@ -81,13 +73,15 @@ export default function King() {
     }
   };
 
-  // Reset form state
   const resetForm = () => {
     setKing(null);
     setIsKingAdded(false);
+    setIsKingNumberAssigned(false);
+    setShowKingNumber(false);
+    setCanSwitchBarangay(true);
+    setSearchText("");
   };
 
-  // Update suggestions based on search input
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchText(value);
@@ -115,7 +109,6 @@ export default function King() {
     setSuggestions(filteredSuggestions);
   };
 
-  // Select a person from suggestions
   const handlePersonSelect = (person) => {
     setSelectedPerson(person._id);
     setKing(person._id);
@@ -124,15 +117,6 @@ export default function King() {
     setSuggestions([]);
     setShowKingNumber(false);
   };
-
-  // Check if the selected barangay already has a king number
-  const barangayWithKing = barangays.find(
-    (b) => b.barangay_name === selectedBarangay
-  );
-  const kingHasNumber =
-    barangayWithKing &&
-    barangayWithKing.king &&
-    people.find((p) => p._id === barangayWithKing.king)?.number;
 
   return (
     <div className="flex items-center justify-center">
@@ -143,9 +127,12 @@ export default function King() {
           onBarangayChange={handleBarangayChange}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
+          disabled={!canSwitchBarangay}
         />
         <KingSearchBox
-          barangayWithKing={barangayWithKing}
+          barangayWithKing={barangays.find(
+            (b) => b.barangay_name === selectedBarangay
+          )}
           searchText={searchText}
           handleSearchChange={handleSearchChange}
           suggestions={suggestions}
@@ -155,12 +142,13 @@ export default function King() {
           isKingAdded={isKingAdded}
           kingName={kingName}
         />
-        {!kingHasNumber && showKingNumber && (
+        {!isKingNumberAssigned && showKingNumber && (
           <KingNumber
             personId={selectedPerson}
             onSuccess={() => {
               setShowKingNumber(false);
               setIsKingAdded(true);
+              setIsKingNumberAssigned(true);
             }}
           />
         )}
