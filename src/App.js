@@ -4,6 +4,7 @@ import { BarangayProvider } from "./contexts/BarangayContext";
 import axios from "axios";
 import Login from "./pages/Login";
 import King from "./pages/King";
+import Prince from "./pages/Prince";
 
 function App() {
   useEffect(() => {
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/encodename/king" element={<King />} />
+            <Route path="/encodename/set-prince" element={<Prince />} />
           </Routes>
         </BrowserRouter>
       </main>
