@@ -12,7 +12,7 @@ export default function King() {
 
   const filteredPeople = useFilteredPeople();
   const [selectedPerson, setSelectedPerson] = useState("");
-  const [king, setKing] = useState(null);
+  const [kingId, setKingId] = useState(null);
   const [kingName, setKingName] = useState("");
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -24,12 +24,12 @@ export default function King() {
   const [canSwitchBarangay, setCanSwitchBarangay] = useState(true);
 
   useEffect(() => {
-    if (king && !isKingNumberAssigned) {
+    if (kingId && !isKingNumberAssigned) {
       setCanSwitchBarangay(false);
     } else {
       setCanSwitchBarangay(true);
     }
-  }, [king, isKingNumberAssigned]);
+  }, [kingId, isKingNumberAssigned]);
 
   const handleBarangayChange = (barangay) => {
     if (!canSwitchBarangay) {
@@ -49,20 +49,20 @@ export default function King() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${king}`, {
+        await axios.put(`http://localhost:3001/people/${kingId}`, {
           role: "king",
           barangay_id: selectedBarangay._id
         });
 
         await axios.put(`http://localhost:3001/barangay/${selectedBarangay._id}`, {
-          king_id: king,
+          king_id: kingId,
           king_name: kingName,
         });
         alert("King has been added successfully!");
         const { data } = await axios.get("http://localhost:3001/barangay");
         setBarangays(data);
 
-        setSelectedPerson(king);
+        setSelectedPerson(kingId);
         setIsKingAdded(true);
         setShowKingNumber(true);
         setIsKingNumberAssigned(false);
@@ -74,7 +74,7 @@ export default function King() {
   };
 
   const resetForm = () => {
-    setKing(null);
+    setKingId(null);
     setIsKingAdded(false);
     setIsKingNumberAssigned(false);
     setShowKingNumber(false);
@@ -111,7 +111,7 @@ export default function King() {
 
   const handlePersonSelect = (person) => {
     setSelectedPerson(person._id);
-    setKing(person._id);
+    setKingId(person._id);
     setKingName(person.name);
     setSearchText(person.name);
     setSuggestions([]);
@@ -137,7 +137,7 @@ export default function King() {
           handleSearchChange={handleSearchChange}
           suggestions={suggestions}
           handlePersonSelect={handlePersonSelect}
-          king={king}
+          kingId={kingId}
           handleAddKing={handleAddKing}
           isKingAdded={isKingAdded}
           kingName={kingName}
