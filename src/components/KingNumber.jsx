@@ -4,7 +4,6 @@ import axios from "axios";
 export default function KingNumber({ personId, onSuccess }) {
   const [kingNumber, setKingNumber] = useState("");
 
-  // Handle king's number input with validation
   const handleKingNumberChange = (e) => {
     const value = e.target.value;
     if (value.length <= 11 && /^\d*$/.test(value)) {
@@ -12,7 +11,6 @@ export default function KingNumber({ personId, onSuccess }) {
     }
   };
 
-  // Add king's number to the selected person
   const handleAddNumber = async () => {
     if (kingNumber.length === 11) {
       if (window.confirm("Are you sure you want to add this number?")) {
