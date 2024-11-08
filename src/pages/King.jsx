@@ -24,12 +24,12 @@ export default function King() {
   const [canSwitchBarangay, setCanSwitchBarangay] = useState(true);
 
   useEffect(() => {
-    if (kingId && !isKingNumberAssigned) {
+    if (kingId && isKingAdded && !isKingNumberAssigned) {
       setCanSwitchBarangay(false);
     } else {
       setCanSwitchBarangay(true);
     }
-  }, [kingId, isKingNumberAssigned]);
+  }, [kingId, isKingAdded, isKingNumberAssigned]);
 
   const handleBarangayChange = (barangay) => {
     if (!canSwitchBarangay) {
