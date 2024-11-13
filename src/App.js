@@ -5,6 +5,7 @@ import axios from "axios";
 import Login from "./pages/Login";
 import King from "./pages/King";
 import Prince from "./pages/Prince";
+import General from "./pages/General";
 
 function App() {
   useEffect(() => {
@@ -22,8 +23,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/encodename/king" element={<King />} />
-            <Route path="/encodename/set-prince" element={<Prince />} />
+            <Route path="/encode-name/king" element={<King />} />
+            <Route path="/encode-name/set-prince" element={<Prince />} />
+            <Route path="/encode-name/set-general" element={<General />} />
           </Routes>
         </BrowserRouter>
       </main>
