@@ -23,7 +23,7 @@ export default function PrinceNumber({ personId, onSuccess }) {
           onSuccess();
         } catch (err) {
           console.error("Error adding number:", err);
-          alert("An error occurred while adding the king's number.");
+          alert("An error occurred while adding the prince's number.");
         }
       } else {
         alert("Please enter an 11-digit number.");

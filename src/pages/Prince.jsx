@@ -55,12 +55,19 @@ export default function Prince() {
 
         const newPrinceId = response.data._id;
 
+        // Update the Barangay's prince field with the new prince
         await axios.put(
           `http://localhost:3001/barangay/${selectedBarangay._id}/prince`,
           {
-            prince: [newPrinceId],
+            prince: [...selectedBarangay.prince, newPrinceId], // Add the new prince to the existing list
           }
         );
+
+        // Update the selectedBarangay in context to trigger re-render
+        setSelectedBarangay((prevBarangay) => ({
+          ...prevBarangay,
+          prince: [...prevBarangay.prince, newPrinceId], // Make sure to include the new prince in the updated state
+        }));
 
         alert("Prince has been added successfully!");
         setShowPrinceNumber(true);

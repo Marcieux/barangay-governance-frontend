@@ -35,7 +35,7 @@ export default function PrinceSearchBox(props) {
             {suggestions.map((suggestion) => (
               <li
                 key={suggestion._id}
-                className="p-1 cursor-pointer hover:bg-gray-200"
+                className="p-2 cursor-pointer text-sm hover:bg-gray-100"
                 onClick={() => handlePersonSelect(suggestion)}
               >
                 {suggestion.name}
