@@ -6,6 +6,9 @@ import Login from "./pages/Login";
 import King from "./pages/King";
 import Prince from "./pages/Prince";
 import General from "./pages/General";
+import Cafgu from "./pages/Cafgu";
+import PurokChair from "./pages/PurokChair";
+import TagaPamayapa from "./pages/TagaPamayapa";
 
 function App() {
   useEffect(() => {
@@ -26,6 +29,9 @@ function App() {
             <Route path="/encode-name/king" element={<King />} />
             <Route path="/encode-name/set-prince" element={<Prince />} />
             <Route path="/encode-name/set-general" element={<General />} />
+            <Route path="/encode-name/set-cafgu" element={<Cafgu />} />
+            <Route path="/encode-name/set-purok-chair" element={<PurokChair />} />
+            <Route path="/encode-name/set-tagapamayapa" element={<TagaPamayapa />} />
           </Routes>
         </BrowserRouter>
       </main>
