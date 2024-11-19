@@ -9,6 +9,11 @@ import General from "./pages/General";
 import Cafgu from "./pages/Cafgu";
 import PurokChair from "./pages/PurokChair";
 import TagaPamayapa from "./pages/TagaPamayapa";
+import Bhw from "./pages/Bhw";
+import Tanod from "./pages/Tanod";
+import PublicSafety from "./pages/PublicSafety";
+import BantayDagat from "./pages/BantayDagat";
+import Coastal from "./pages/Coastal";
 
 function App() {
   useEffect(() => {
@@ -32,6 +37,11 @@ function App() {
             <Route path="/encode-name/set-cafgu" element={<Cafgu />} />
             <Route path="/encode-name/set-purok-chair" element={<PurokChair />} />
             <Route path="/encode-name/set-tagapamayapa" element={<TagaPamayapa />} />
+            <Route path="/encode-name/bhw" element={<Bhw />} />
+            <Route path="/encode-name/tanod" element={<Tanod />} />
+            <Route path="/encode-name/public-safety" element={<PublicSafety />} />
+            <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
+            <Route path="/encode-name/coastal" element={<Coastal />} />
           </Routes>
         </BrowserRouter>
       </main>
