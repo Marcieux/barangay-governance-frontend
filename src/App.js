@@ -14,6 +14,7 @@ import Tanod from "./pages/Tanod";
 import PublicSafety from "./pages/PublicSafety";
 import BantayDagat from "./pages/BantayDagat";
 import Coastal from "./pages/Coastal";
+import Mati from "./pages/Mati";
 
 function App() {
   useEffect(() => {
@@ -42,6 +43,7 @@ function App() {
             <Route path="/encode-name/public-safety" element={<PublicSafety />} />
             <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
             <Route path="/encode-name/coastal" element={<Coastal />} />
+            <Route path="/get-names/mati" element={<Mati />} />
           </Routes>
         </BrowserRouter>
       </main>
