@@ -8,7 +8,8 @@ export const useFilteredPeople = () => {
   useEffect(() => {
     setFilteredPeople(
       selectedBarangay
-        ? people.filter((person) => person.barangay === selectedBarangay.barangay_name)
+        ? people.filter((person) => person.barangay_name?.toLowerCase() === selectedBarangay.barangay_name?.toLowerCase()
+      )
         : []
     );
   }, [selectedBarangay, people]);
