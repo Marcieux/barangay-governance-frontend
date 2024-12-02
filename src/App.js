@@ -15,6 +15,8 @@ import PublicSafety from "./pages/PublicSafety";
 import BantayDagat from "./pages/BantayDagat";
 import Coastal from "./pages/Coastal";
 import Mati from "./pages/Mati";
+import AngatKa from "./pages/AngatKa";
+import NotFound from "./pages/NotFound";
 
 function App() {
   useEffect(() => {
@@ -44,6 +46,9 @@ function App() {
             <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
             <Route path="/encode-name/coastal" element={<Coastal />} />
             <Route path="/get-names/mati" element={<Mati />} />
+            <Route path="/get-names/mati/:barangay/angat-ka" element={<AngatKa />} />
+
+            <Route path="*" element={<NotFound />}/>
           </Routes>
         </BrowserRouter>
       </main>
