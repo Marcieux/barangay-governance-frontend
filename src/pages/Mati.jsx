@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import BarangaySearchBox from "../components/BarangaySearchBox";
 import BarangayContext from "../contexts/BarangayContext";
+import Loading from "../components/Loading"; // Adjust the path to match your file structure
 
 export default function Mati() {
   const { barangays } = useContext(BarangayContext);
@@ -12,6 +13,7 @@ export default function Mati() {
   const [showStructure, setShowStructure] = useState(false);
   const [generalCount, setGeneralCount] = useState(0);
   const [isBarangaySelected, setIsBarangaySelected] = useState(false); // Tracks if a barangay is selected
+  const [loading, setLoading] = useState(false); // Loading state for fetch calls
   const navigate = useNavigate();
 
   // Fetch the barangay data based on the selected barangay
@@ -31,6 +33,7 @@ export default function Mati() {
   useEffect(() => {
     if (selectedBarangayName) {
       const fetchGeneralCount = async () => {
+        setLoading(true); // Start loading
         try {
           const response = await axios.get(
             "http://localhost:3001/people/generals",
@@ -42,6 +45,8 @@ export default function Mati() {
         } catch (error) {
           console.error("Error fetching generals count:", error);
           setGeneralCount(0);
+        } finally {
+          setLoading(false); // Stop loading
         }
       };
 
@@ -50,9 +55,42 @@ export default function Mati() {
   }, [selectedBarangayName]);
 
   // Function to handle click on KA (Princes)
-  const handleKAClick = () => {
+  const handleKAClick = async () => {
     if (selectedBarangayName) {
-      navigate(`/get-names/mati/${selectedBarangayName}/ipmr`);
+      setLoading(true); // Start loading
+      try {
+        const response = await axios.get("http://localhost:3001/people/");
+        const people = response.data;
+
+        // Filter the princes based on barangay name and role
+        const princes = people
+          .filter(
+            (person) =>
+              person.barangay_name?.toLowerCase() ===
+                selectedBarangayName.toLowerCase() &&
+              person.role === "prince"
+          )
+          .map((prince) => ({
+            name: prince.name,
+            number: prince.number,
+            precinct: prince.precinct,
+          }));
+
+        // Navigate to AngatKa page with the relevant data
+        navigate(`/get-names/mati/${selectedBarangayName}/angat-ka`, {
+          state: {
+            barangayName: selectedBarangayName,
+            kingName: kingName,
+            princes: princes,
+          },
+        });
+      } catch (error) {
+        console.error("Failed to fetch or process princes:", error);
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    } else {
+      console.warn("No barangay name selected.");
     }
   };
 
@@ -70,57 +108,64 @@ export default function Mati() {
     }
   }, [selectedBarangayName]);
 
+  // Show loading spinner if fetching data
+  if (loading) {
+    return <Loading message="Please wait..." />;
+  }
+
   return (
-    <div className="flex flex-row items-center gap-10 justify-between">
+    <div className="flex flex-row items-center justify-between">
       {selectedBarangayName && (
-        <div className="text-center bg-white p-6 rounded shadow-md w-[700px] space-y-7">
-          <h1 className="text-2xl font-bold text-gray-800 mt-5">MATI</h1>
-          <p className="text-xl font-medium text-gray-600 uppercase">
+        <div className="text-center bg-white p-6 rounded shadow-md w-[700px] space-y-5">
+          <h1 className="text-3xl font-bold text-gray-800">MATI</h1>
+          <p className="text-xl font-bold text-gray-600 uppercase">
             Barangay: {selectedBarangayName}
           </p>
 
           <div className="flex justify-between mx-10 text-sm">
             <button
-              className="text-red-500 font-medium rounded-md p-2 hover:underline"
+              className="bg-red-500 text-white font-medium rounded-md p-2"
               onClick={() => setShowStructure(true)}
             >
               Structure
             </button>
-            <button className="text-red-500 font-medium rounded-md p-2 hover:underline">
+            <button className="bg-red-500 text-white font-medium rounded-md p-2">
               Functionaries
             </button>
           </div>
 
           {showStructure && (
             <div className="mt-4 space-y-8 text-left">
-              <p className="text-sm space-x-8 border-b border-red-300">
-                <span className="font-bold">AC: </span>
-                <span className="text-red-600 font-medium">
-                  {kingName || "No king assigned"}{" "}
-                </span>
-              </p>
-              <p className="text-sm space-x-8 border-b border-red-300">
-                <span
-                  className="font-bold cursor-pointer"
-                  onClick={handleKAClick}
-                >
-                  KA:{" "}
-                </span>
-                <span className="text-red-600 font-medium">{princeCount}</span>
-              </p>
-              <p className="text-sm space-x-5 border-b border-red-300">
-                <span
-                  className="font-bold cursor-pointer"
-                  onClick={handleWTCClick}
-                >
-                  WTC:{" "}
-                </span>
-                <span className="text-red-600 font-medium">{generalCount}</span>
-              </p>
-              <p className="text-sm space-x-10 border-b border-red-300">
-                <span className="font-bold cursor-pointer">FL:</span>
-                <span className="text-red-600"> </span>
-              </p>
+              <table className="w-full border-collapse text-sm">
+                <tbody>
+                  <tr>
+                    <td className="border p-2 font-bold">AC:</td>
+                    <td className="border p-2">{kingName || "No king assigned"}</td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td
+                      className="border p-2 font-bold cursor-pointer"
+                      onClick={handleKAClick}
+                    >
+                      KA:
+                    </td>
+                    <td className="border p-2">{princeCount}</td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="border p-2 font-bold cursor-pointer"
+                      onClick={handleWTCClick}
+                    >
+                      WTC:
+                    </td>
+                    <td className="border p-2">{generalCount}</td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td className="border p-2 font-bold">FL:</td>
+                    <td className="border p-2 font-bold">-</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
         </div>
@@ -128,7 +173,7 @@ export default function Mati() {
 
       <div
         className={`bg-white p-6 rounded shadow-md w-[400px] space-y-4 ${
-          isBarangaySelected ? "absolute top-14 right-14" : "relative"
+          isBarangaySelected ? "absolute top-20 right-20" : "relative"
         }`}
       >
         <BarangaySearchBox />
