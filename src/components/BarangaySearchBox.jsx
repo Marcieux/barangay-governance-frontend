@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function BarangaySearchBox() {
   const { barangays, setSelectedBarangay } = useContext(BarangayContext);
   const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false); // Loading state
+  const [filteredBarangays, setFilteredBarangays] = useState([]); // Local filtered state
   const navigate = useNavigate();
 
   const handleBarangaySelect = (barangay) => {
@@ -16,26 +17,38 @@ export default function BarangaySearchBox() {
     navigate(`/get-names/mati?barangay=${barangay.barangay_name}`);
   };
 
-  // Simulate a fetch with a timeout for demonstration
-  const filteredBarangays = barangays
-    .filter((barangay) => barangay.municipality === "Mati") // Filter by municipality
-    .filter((barangay) =>
-      barangay.barangay_name
-        .toLowerCase()
-        .split(" ")
-        .some((word) => word.startsWith(searchText.toLowerCase()))
-    );
+  const fetchFilteredBarangays = async (query) => {
+    setLoading(true);
+    try {
+      // Simulate fetching barangays based on search text
+      const results = barangays
+        .filter((barangay) => barangay.municipality === "Mati") // Filter by municipality
+        .filter((barangay) =>
+          barangay.barangay_name
+            .toLowerCase()
+            .split(" ")
+            .some((word) => word.startsWith(query.toLowerCase()))
+        );
+
+      // Simulate delay to showcase loading state
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Optional: remove or adjust delay
+      setFilteredBarangays(results);
+    } catch (error) {
+      console.error("Error fetching barangays:", error);
+      setFilteredBarangays([]);
+    } finally {
+      setLoading(false); // Stop loading after fetch completes
+    }
+  };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchText(value);
 
     if (value) {
-      setLoading(true); // Start loading
-      setTimeout(() => {
-        setLoading(false); // Simulate fetch completion
-      }, 10000); // Adjust the timeout duration as needed
+      fetchFilteredBarangays(value); // Trigger fetch with search text
     } else {
+      setFilteredBarangays([]); // Clear results when search text is empty
       setLoading(false);
     }
   };
