@@ -19,7 +19,10 @@ export default function General() {
   const [showGeneralNumber, setShowGeneralNumber] = useState(false);
   const [kingId, setKingId] = useState(null);
   const [kingName, setKingName] = useState("");
-  const [princeDetails, setPrinceDetails] = useState("");
+
+  // Track prince data
+  const [princeId, setPrinceId] = useState(null);
+  const [princeName, setPrinceName] = useState("");
 
   useEffect(() => {
     const selectedBarangayData = barangays.find(
@@ -29,7 +32,7 @@ export default function General() {
       setKingId(selectedBarangayData.king_id);
       setKingName(selectedBarangayData.king_name);
     }
-  }, [selectedBarangay, barangays, generalId]);
+  }, [selectedBarangay, barangays]);
 
   const handleGeneralSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -80,78 +83,34 @@ export default function General() {
       return;
     }
 
+    if (!princeId) {
+      alert("Select a prince first.");
+      return;
+    }
+
     if (
       window.confirm(
         `Are you sure you want to set '${generalName}' as general of '${selectedBarangay.barangay_name}'?`
       )
     ) {
       try {
-        // Fetch prince details for all princes from the selected barangay
-        const princeIds = selectedBarangay.prince; // All prince IDs in the barangay
-
-        if (princeIds.length === 0) {
-          alert("No prince found for this barangay.");
-          return;
-        }
-
-        // Fetch details for all princes
-        const princeDetailsPromises = princeIds.map(
-          (princeId) => axios.get(`http://localhost:3001/prince/${princeId}`) // Fetch each prince's details
-        );
-
-        const princeResponses = await Promise.all(princeDetailsPromises);
-        const princeDataArray = princeResponses.map(
-          (response) => response.data
-        );
-
-        // Ensure all prince data is valid
-        const validPrinceData = princeDataArray.filter(
-          (princeData) => princeData
-        );
-
-        if (validPrinceData.length === 0) {
-          alert("No prince details found.");
-          return;
-        }
-
-        // Collect prince IDs and names
-        const princeIdsArray = validPrinceData.map(
-          (prince) => prince.prince_id
-        );
-        const princeNamesArray = validPrinceData.map(
-          (prince) => prince.prince_name
-        );
-
-        setPrinceDetails({
-          princeIds: princeIdsArray, // Array of prince IDs
-          princeNames: princeNamesArray, // Array of prince names
-        });
-
-        // Now proceed with adding the general to the database
+        // Update the general's role
         await axios.put(`http://localhost:3001/people/${generalId}`, {
           role: "general",
           barangay_id: selectedBarangay._id,
         });
 
-        const response = await axios.post("http://localhost:3001/general", {
+        // Add the general to the selected prince
+        await axios.post("http://localhost:3001/general", {
           general_id: generalId,
           general_name: generalName,
           barangay_name: selectedBarangay.barangay_name,
           barangay_id: selectedBarangay._id,
           king_id: kingId,
           king_name: kingName,
-          prince_id: princeIdsArray, 
-          prince_name: princeNamesArray, 
+          prince_id: princeId,
+          prince_name: princeName,
         });
-
-        const newGeneralId = response.data._id;
-        await Promise.all(
-          selectedBarangay.prince.map((princeId) =>
-            axios.put(`http://localhost:3001/prince/${princeId}/general`, {
-              general: [newGeneralId],
-            })
-          )
-        );
 
         alert("General has been added successfully!");
         setShowGeneralNumber(true);
@@ -171,9 +130,17 @@ export default function General() {
     setShowGeneralNumber(false);
   };
 
+  const handleSelectPrince = (id, name) => {
+    setPrinceId(id); // Set selected prince ID
+    setPrinceName(name); // Set selected prince name
+  };
+
   return (
     <div className="flex flex-col items-center justify-center">
-      <Prince handleBarangayChange={handleBarangayChange} />
+      <Prince
+        handleBarangayChange={handleBarangayChange}
+        onSelectPrince={handleSelectPrince}
+      />
       <div className="bg-white p-6 rounded shadow-md w-[400px] mt-4 space-y-4">
         <GeneralSearchBox
           searchText={generalSearchText}
