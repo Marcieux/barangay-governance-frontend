@@ -6,7 +6,7 @@ import PrinceNumber from "../components/PrinceNumber";
 import BarangayContext from "../contexts/BarangayContext";
 import { useFilteredPeople } from "../hooks/useBarangayData";
 
-export default function Prince() {
+export default function Prince({ onSelectPrince }) {
   const { selectedBarangay, setSelectedBarangay, barangays } =
     useContext(BarangayContext);
   const filteredPeople = useFilteredPeople();
@@ -53,20 +53,19 @@ export default function Prince() {
           king_id: kingId,
         });
 
-        const newPrinceId = response.data._id;
-
+        const newPrinceId = response.data;
         // Update the Barangay's prince field with the new prince
         await axios.put(
           `http://localhost:3001/barangay/${selectedBarangay._id}/prince`,
           {
-            prince: [...selectedBarangay.prince, newPrinceId], // Add the new prince to the existing list
+            prince_id: [...selectedBarangay.prince_id, newPrinceId.prince_id], // Add the new prince to the existing list
           }
         );
 
         // Update the selectedBarangay in context to trigger re-render
         setSelectedBarangay((prevBarangay) => ({
           ...prevBarangay,
-          prince: [...prevBarangay.prince, newPrinceId], // Make sure to include the new prince in the updated state
+          prince_id: [...prevBarangay.prince_id, newPrinceId.prince_id], // Make sure to include the new prince in the updated state
         }));
 
         alert("Prince has been added successfully!");
@@ -124,6 +123,9 @@ export default function Prince() {
     setPrinceSearchText(person.name);
     setPrinceSuggestions([]);
     setShowPrinceNumber(false);
+
+    // Pass the selected prince's ID and name to the parent component (General)
+    onSelectPrince(person._id, person.name);
   };
 
   return (
@@ -142,7 +144,6 @@ export default function Prince() {
             personId={princeId}
             onSuccess={() => {
               setShowPrinceNumber(false);
-              setPrinceSearchText("");
             }}
           />
         )}
