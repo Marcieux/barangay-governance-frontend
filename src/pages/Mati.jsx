@@ -11,6 +11,7 @@ export default function Mati() {
   const [searchParams] = useSearchParams();
   const selectedBarangayName = searchParams.get("barangay");
   const [showStructure, setShowStructure] = useState(false);
+  const [princeCount, setPrinceCount] = useState(0);
   const [generalCount, setGeneralCount] = useState(0);
   const [isBarangaySelected, setIsBarangaySelected] = useState(false); // Tracks if a barangay is selected
   const [loading, setLoading] = useState(false); // Loading state for fetch calls
@@ -22,35 +23,32 @@ export default function Mati() {
   );
   const kingName = selectedBarangayData ? selectedBarangayData.king_name : "";
 
-  // Count the total number of princes in the barangay
-  const princeCount = selectedBarangayData
-    ? selectedBarangayData.prince
-      ? selectedBarangayData.prince.length
-      : 0
-    : 0;
-
-  // Fetch the generals from the API
+  // Fetch the prince and generals from the API
   useEffect(() => {
     if (selectedBarangayName) {
-      const fetchGeneralCount = async () => {
-        setLoading(true); // Start loading
+      const fetchData = async () => {
+        setLoading(true);
         try {
-          const response = await axios.get(
-            "http://localhost:3001/people/generals",
-            {
+          const [princesRes, generalsRes] = await Promise.all([
+            axios.get("http://localhost:3001/people/princes", {
               params: { barangay: selectedBarangayName },
-            }
-          );
-          setGeneralCount(response.data.count || 0);
+            }),
+            axios.get("http://localhost:3001/people/generals", {
+              params: { barangay: selectedBarangayName },
+            }),
+          ]);
+          setPrinceCount(princesRes.data.count || 0);
+          setGeneralCount(generalsRes.data.count || 0);
         } catch (error) {
-          console.error("Error fetching generals count:", error);
+          console.error("Error fetching data:", error);
+          setPrinceCount(0);
           setGeneralCount(0);
         } finally {
-          setLoading(false); // Stop loading
+          setLoading(false);
         }
       };
 
-      fetchGeneralCount();
+      fetchData();
     }
   }, [selectedBarangayName]);
 
@@ -67,14 +65,37 @@ export default function Mati() {
           .filter(
             (person) =>
               person.barangay_name?.toLowerCase() ===
-                selectedBarangayName.toLowerCase() &&
-              person.role === "prince"
+                selectedBarangayName.toLowerCase() && person.role === "prince"
           )
-          .map((prince) => ({
-            name: prince.name,
-            number: prince.number,
-            precinct: prince.precinct,
-          }));
+          .map((prince) => {
+            return {
+              name: prince.name,
+              number: prince.number,
+              precinct: prince.precinct,
+              prince_id: prince._id, // This ID of prince in the people collection.
+            };
+          });
+
+        // Fetch all prince data from the prince collection
+        const princeResponse = await axios.get("http://localhost:3001/prince/");
+        const princeData = princeResponse.data;
+
+        // Filter and map to find generals for each prince
+        const princeGeneral = princes.map((prince) => {
+          // Find the matching prince in the `princeData` by comparing `prince_id`
+          const matchedPrince = princeData.find(
+            (princeRecord) => princeRecord.prince_id === prince.prince_id
+          );
+
+          // Extract the number of generals if matched, otherwise 0
+          const generalsCount = matchedPrince?.general?.length || 0;
+
+          // Return a summary object
+          return {
+            princeName: prince.name,
+            generalsCount,
+          };
+        });
 
         // Navigate to AngatKa page with the relevant data
         navigate(`/get-names/mati/${selectedBarangayName}/angat-ka`, {
@@ -82,6 +103,7 @@ export default function Mati() {
             barangayName: selectedBarangayName,
             kingName: kingName,
             princes: princes,
+            princeGeneral: princeGeneral,
           },
         });
       } catch (error) {
@@ -140,7 +162,9 @@ export default function Mati() {
                 <tbody>
                   <tr>
                     <td className="border p-2 font-bold">AC:</td>
-                    <td className="border p-2">{kingName || "No king assigned"}</td>
+                    <td className="border p-2">
+                      {kingName || "No king assigned"}
+                    </td>
                   </tr>
                   <tr className="bg-gray-50">
                     <td
