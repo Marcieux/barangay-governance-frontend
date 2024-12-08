@@ -16,6 +16,7 @@ import BantayDagat from "./pages/BantayDagat";
 import Coastal from "./pages/Coastal";
 import Mati from "./pages/Mati";
 import AngatKa from "./pages/AngatKa";
+import Wtc from "./pages/Wtc";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
             <Route path="/encode-name/coastal" element={<Coastal />} />
             <Route path="/get-names/mati" element={<Mati />} />
             <Route path="/get-names/mati/:barangay/angat-ka" element={<AngatKa />} />
-
+            <Route path="/get-names/mati/:barangay/angat-ka/:id" element={<Wtc />} />
             <Route path="*" element={<NotFound />}/>
           </Routes>
         </BrowserRouter>
