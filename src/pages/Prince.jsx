@@ -34,6 +34,35 @@ export default function Prince({ onSelectPrince }) {
       return;
     }
 
+    try {
+      const { data: personData } = await axios.get(
+        `http://localhost:3001/people/${princeId}`
+      );
+
+      // Check if the prince already has a "general" role
+      if (personData.role === "general") {
+        alert(
+          `This person '${princeName}' already has a general role and cannot be added as prince.`
+        );
+        return;
+      }
+    } catch (err) {
+      console.error("Error checking prince role:", err);
+      alert("An error occurred while checking the prince's role.");
+      return;
+    }
+
+    // Validate if the prince is already added to the barangay
+    if (
+      selectedBarangay.prince_id &&
+      selectedBarangay.prince_id.includes(princeId)
+    ) {
+      alert(
+        `This person is already a prince in '${selectedBarangay.barangay_name}'.`
+      );
+      return;
+    }
+
     if (
       window.confirm(
         `Are you sure you want to set '${princeName}' as prince of '${selectedBarangay.barangay_name}'?`
@@ -73,7 +102,7 @@ export default function Prince({ onSelectPrince }) {
         setIsPrinceAdded(true);
       } catch (err) {
         console.error("Error adding prince:", err);
-        alert("ERROR: A Prince has been added already in the barangay");
+        alert("An error occurred while adding the prince.");
       }
     }
   };
@@ -94,7 +123,9 @@ export default function Prince({ onSelectPrince }) {
 
     if (!value) {
       setPrinceSuggestions([]);
+      setPrinceId(null); // Clear princeId when the search box is cleared
       setPrinceName("");
+      onSelectPrince(null);
       return;
     }
 
