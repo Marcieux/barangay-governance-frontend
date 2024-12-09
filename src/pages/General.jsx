@@ -40,6 +40,7 @@ export default function General() {
 
     if (!value) {
       setGeneralSuggestions([]);
+      setGeneralId(null);
       setGeneralName("");
       return;
     }
@@ -47,12 +48,7 @@ export default function General() {
     const tokens = value.split(" ");
 
     const filteredSuggestions = filteredPeople
-      .filter(
-        (person) =>
-          person._id !== kingId &&
-          person.role !== "prince" &&
-          person.role !== "general"
-      )
+      .filter((person) => person._id !== kingId)
       .map((person) => ({
         person,
         score: tokens.reduce(
@@ -88,19 +84,37 @@ export default function General() {
       return;
     }
 
-    if (
-      window.confirm(
-        `Are you sure you want to set '${generalName}' as general of '${selectedBarangay.barangay_name}'?`
-      )
-    ) {
-      try {
-        // Update the general's role
+    try {
+      const { data: personData } = await axios.get(
+        `http://localhost:3001/people/${generalId}`
+      );
+
+      // Check if the selected person is already a prince
+      if (personData.role === "prince") {
+        alert(
+          `This person '${generalName}' is already a prince and cannot be added as a general.`
+        );
+        return;
+      }
+
+      // Check if the selected person is already a general
+      if (personData.role === "general") {
+        alert(
+          `'${generalName}' is already a general and cannot be added again.`
+        );
+        return;
+      }
+
+      if (
+        window.confirm(
+          `Are you sure you want to set '${generalName}' as general of '${selectedBarangay.barangay_name}'?`
+        )
+      ) {
         await axios.put(`http://localhost:3001/people/${generalId}`, {
           role: "general",
           barangay_id: selectedBarangay._id,
         });
 
-        // Add the general to the selected prince
         await axios.post("http://localhost:3001/general", {
           general_id: generalId,
           general_name: generalName,
@@ -115,10 +129,10 @@ export default function General() {
         alert("General has been added successfully!");
         setShowGeneralNumber(true);
         setIsGeneralAdded(true);
-      } catch (err) {
-        console.error("Error adding general:", err);
-        alert("An error occurred while adding the general.");
       }
+    } catch (err) {
+      console.error("Error adding general:", err);
+      alert("An error occurred while adding the general.");
     }
   };
 
