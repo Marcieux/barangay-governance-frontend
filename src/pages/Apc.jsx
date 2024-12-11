@@ -54,12 +54,12 @@ export default function Wtc() {
       </h1>
 
       <div className="flex flex-row justify-between items-center text-sm">
-        <span className="font-bold uppercase">WTC List</span>
+        <span className="font-bold uppercase">APC List</span>
         <span className="font-bold uppercase text-red-500">
-          Angat Ka: {princeName}
+          ABLC: {princeName}
         </span>
         <span className="font-bold uppercase text-red-500">
-          King: {kingName}
+          ANGAT CHAIR: {kingName}
         </span>
         <input
           className="p-2 border border-red-500 rounded text-sm outline-none"

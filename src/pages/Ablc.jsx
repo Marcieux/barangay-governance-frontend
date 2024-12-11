@@ -63,7 +63,9 @@ export default function AngatKa() {
 
     try {
       // Fetch the people data to filter generals based on the barangay and role
-      const response = await axios.get("http://localhost:3001/people/");
+      const response = await axios.get("http://localhost:3001/people/by-barangay", {
+        params: { barangay: barangayName },
+      }); 
       const people = response.data;
 
       // Filter the generals based on barangay name and role ("general")
@@ -107,7 +109,7 @@ export default function AngatKa() {
         });
 
       // Navigate and pass the generals with the details
-      navigate(`/get-names/mati/${barangay}/angat-ka/${prince_id}`, {
+      navigate(`/get-names/${barangay}/ablc/${prince_id}`, {
         state: {
           barangayName: barangay,
           princeName: princeName,
@@ -134,9 +136,9 @@ export default function AngatKa() {
       </h1>
 
       <div className="flex flex-row justify-between items-center text-sm">
-        <span className="font-bold uppercase">Angat-Ka List</span>
+        <span className="font-bold uppercase">ABLC List</span>
         <span className="font-bold uppercase text-red-500">
-          King: {kingName}
+          ANGAT CHAIR: {kingName}
         </span>
         <input
           className="p-2 border border-red-500 rounded text-sm outline-none"
@@ -155,7 +157,7 @@ export default function AngatKa() {
               <th className="border border-gray-300 p-2">Name</th>
               <th className="border border-gray-300 p-2">Phone No.</th>
               <th className="border border-gray-300 p-2">Precinct</th>
-              <th className="border border-gray-300 p-2">No. of WTC</th>
+              <th className="border border-gray-300 p-2">No. of APC</th>
               <th className="border border-gray-300 p-2">No. of FL</th>
               <th className="border border-gray-300 p-2">Total DL</th>
               <th className="border border-gray-300 p-2">Remarks</th>
@@ -189,7 +191,7 @@ export default function AngatKa() {
                   <td className="border border-gray-300 p-2">
                     {getGeneralCount(prince.name)}
                   </td>
-                  {/* No. of WTC*/}
+                  {/* No. of APC*/}
                   <td className="border border-gray-300 p-2">-</td>
                   <td className="border border-gray-300 p-2">-</td>
                   <td className="border border-gray-300 p-2">-</td>

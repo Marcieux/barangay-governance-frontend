@@ -53,11 +53,13 @@ export default function Mati() {
   }, [selectedBarangayName]);
 
   // Function to handle click on KA (Princes)
-  const handleKAClick = async () => {
+  const handleABLCClick = async () => {
     if (selectedBarangayName) {
       setLoading(true); // Start loading
       try {
-        const response = await axios.get("http://localhost:3001/people/");
+        const response = await axios.get("http://localhost:3001/people/by-barangay", {
+          params: { barangay: selectedBarangayName },
+        }); 
         const people = response.data;
 
         // Filter the princes based on barangay name and role
@@ -98,7 +100,7 @@ export default function Mati() {
         });
 
         // Navigate to AngatKa page with the relevant data
-        navigate(`/get-names/mati/${selectedBarangayName}/angat-ka`, {
+        navigate(`/get-names/${selectedBarangayName}/ablc`, {
           state: {
             barangayName: selectedBarangayName,
             kingName: kingName,
@@ -117,9 +119,9 @@ export default function Mati() {
   };
 
   // Function to handle click on WTC (Generals)
-  const handleWTCClick = () => {
+  const handleAPCClick = () => {
     if (selectedBarangayName) {
-      navigate(`/get-names/mati/${selectedBarangayName}/wtc`);
+      navigate(`/get-names/${selectedBarangayName}/apc`);
     }
   };
 
@@ -139,8 +141,8 @@ export default function Mati() {
     <div className="flex flex-row items-center justify-between">
       {selectedBarangayName && (
         <div className="text-center bg-white p-6 rounded shadow-md w-[700px] space-y-5">
-          <h1 className="text-3xl font-bold text-gray-800">MATI</h1>
-          <p className="text-xl font-bold text-gray-600 uppercase">
+          {/* <h1 className="text-3xl font-bold text-gray-800">MATI</h1> */}
+          <p className="text-3xl font-bold text-gray-800 uppercase">
             Barangay: {selectedBarangayName}
           </p>
 
@@ -169,18 +171,18 @@ export default function Mati() {
                   <tr className="bg-gray-50">
                     <td
                       className="border p-2 font-bold cursor-pointer"
-                      onClick={handleKAClick}
+                      onClick={handleABLCClick}
                     >
-                      KA:
+                      ABLC:
                     </td>
                     <td className="border p-2">{princeCount}</td>
                   </tr>
                   <tr>
                     <td
                       className="border p-2 font-bold cursor-pointer"
-                      onClick={handleWTCClick}
+                      onClick={handleAPCClick}
                     >
-                      WTC:
+                      APC:
                     </td>
                     <td className="border p-2">{generalCount}</td>
                   </tr>

@@ -14,7 +14,7 @@ export default function BarangaySearchBox() {
     setSearchText(barangay.barangay_name);
     setSearchText("");
 
-    navigate(`/get-names/mati?barangay=${barangay.barangay_name}`);
+    navigate(`/get-names?barangay=${barangay.barangay_name}`);
   };
 
   const fetchFilteredBarangays = async (query) => {
@@ -22,7 +22,6 @@ export default function BarangaySearchBox() {
     try {
       // Simulate fetching barangays based on search text
       const results = barangays
-        .filter((barangay) => barangay.municipality === "Mati") // Filter by municipality
         .filter((barangay) =>
           barangay.barangay_name
             .toLowerCase()
