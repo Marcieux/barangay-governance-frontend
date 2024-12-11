@@ -4,7 +4,7 @@ import BarangayContext from "../contexts/BarangayContext";
 import { useFilteredPeople } from "../hooks/useBarangayData";
 import Prince from "./Prince";
 import GeneralSearchBox from "../components/GeneralSearchBox";
-import GeneralNumber from "../components/GeneralNumber";
+import GeneralPurok from "../components/GeneralPurok";
 
 export default function General() {
   const { selectedBarangay, setSelectedBarangay, barangays } =
@@ -16,7 +16,8 @@ export default function General() {
   const [generalSearchText, setGeneralSearchText] = useState("");
   const [generalSuggestions, setGeneralSuggestions] = useState([]);
   const [isGeneralAdded, setIsGeneralAdded] = useState(false);
-  const [showGeneralNumber, setShowGeneralNumber] = useState(false);
+  const [showGeneralPurok, setShowGeneralPurok] = useState(false);
+  const [generalPurok, setGeneralPurok] = useState("");
   const [kingId, setKingId] = useState(null);
   const [kingName, setKingName] = useState("");
 
@@ -70,7 +71,7 @@ export default function General() {
     setGeneralId(null);
     setGeneralName("");
     setGeneralSearchText("");
-    setShowGeneralNumber(false);
+    setShowGeneralPurok(false);
   };
 
   const handleAddGeneral = async () => {
@@ -105,6 +106,9 @@ export default function General() {
         return;
       }
 
+      // Retrieve the precinct data from the personData
+      const { precinct } = personData;
+
       if (
         window.confirm(
           `Are you sure you want to set '${generalName}' as general of '${selectedBarangay.barangay_name}'?`
@@ -118,6 +122,7 @@ export default function General() {
         await axios.post("http://localhost:3001/general", {
           general_id: generalId,
           general_name: generalName,
+          precinct: precinct,
           barangay_name: selectedBarangay.barangay_name,
           barangay_id: selectedBarangay._id,
           king_id: kingId,
@@ -127,7 +132,7 @@ export default function General() {
         });
 
         alert("General has been added successfully!");
-        setShowGeneralNumber(true);
+        setShowGeneralPurok(true);
         setIsGeneralAdded(true);
       }
     } catch (err) {
@@ -141,12 +146,28 @@ export default function General() {
     setGeneralName(person.name);
     setGeneralSearchText(person.name);
     setGeneralSuggestions([]);
-    setShowGeneralNumber(false);
+    setShowGeneralPurok(false);
   };
 
   const handleSelectPrince = (id, name) => {
     setPrinceId(id); // Set selected prince ID
     setPrinceName(name); // Set selected prince name
+  };
+
+  const handlePurokAdded = async (purokData) => {
+    try {
+      await axios.put(`http://localhost:3001/general/${generalId}`, {
+        purok: purokData,
+      });
+
+      setGeneralPurok(purokData);
+      setShowGeneralPurok(false);
+      setGeneralSearchText("");
+      alert("Purok added successfully!");
+    } catch (err) {
+      console.error("Error updating Purok:", err);
+      alert("An error occurred while updating the Purok.");
+    }
   };
 
   return (
@@ -163,13 +184,10 @@ export default function General() {
           handlePersonSelect={handleGeneralSelect}
           handleAddGeneral={handleAddGeneral}
         />
-        {isGeneralAdded && showGeneralNumber && (
-          <GeneralNumber
+        {isGeneralAdded && showGeneralPurok && (
+          <GeneralPurok
             personId={generalId}
-            onSuccess={() => {
-              setShowGeneralNumber(false);
-              setGeneralSearchText("");
-            }}
+            onSuccess={handlePurokAdded}
           />
         )}
       </div>
