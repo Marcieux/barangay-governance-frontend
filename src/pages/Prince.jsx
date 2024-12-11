@@ -6,7 +6,7 @@ import PrinceNumber from "../components/PrinceNumber";
 import BarangayContext from "../contexts/BarangayContext";
 import { useFilteredPeople } from "../hooks/useBarangayData";
 
-export default function Prince({ onSelectPrince }) {
+export default function Prince({ onSelectPrince = () => {} }) {
   const { selectedBarangay, setSelectedBarangay, barangays } =
     useContext(BarangayContext);
   const filteredPeople = useFilteredPeople();
