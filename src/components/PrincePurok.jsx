@@ -18,7 +18,7 @@ export default function PrincePurok({ personId, onSuccess }) {
           });
           alert("Prince's Purok added successfully!");
           setPrincePurok("");
-          onSuccess();
+          onSuccess(princePurok);
         } catch (err) {
           console.error("Error adding Purok:", err);
           alert("An error occurred while adding the prince's Purok.");
@@ -31,7 +31,7 @@ export default function PrincePurok({ personId, onSuccess }) {
   return (
     <div>
       <label className="block mb-2 text-sm font-medium text-red-500">
-        Prince's Purok
+        ABLC's Purok
       </label>
       <div className="flex justify-between">
         <input

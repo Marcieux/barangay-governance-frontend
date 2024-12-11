@@ -18,7 +18,7 @@ export default function GeneralPurok({ personId, onSuccess }) {
           });
           alert("General's Purok added successfully!");
           setGeneralPurok("");
-          onSuccess();
+          onSuccess(generalPurok);
         } catch (err) {
           console.error("Error adding Purok:", err);
           alert("An error occurred while adding the general's Purok.");
@@ -31,7 +31,7 @@ export default function GeneralPurok({ personId, onSuccess }) {
   return (
     <div>
       <label className="block mb-2 text-sm font-medium text-red-500">
-        General's Purok
+        APC's Purok
       </label>
       <div className="flex justify-between">
         <input
