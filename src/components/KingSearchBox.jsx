@@ -16,7 +16,7 @@ export default function KingSearchBox(props) {
   return (
     <div>
       <label className="block mb-2 text-sm font-medium text-red-500">
-        King
+        Angat Chair
       </label>
       <div className="flex gap-5">
         {barangayWithKing?.king_id || isKingAdded ? (

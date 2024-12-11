@@ -12,7 +12,7 @@ export default function PrinceSearchBox(props) {
   return (
     <div>
       <label className="block mb-2 text-sm font-medium text-red-500">
-        Prince
+        ABLC
       </label>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between gap-5">
