@@ -30,10 +30,10 @@ export default function Mati() {
         setLoading(true);
         try {
           const [princesRes, generalsRes] = await Promise.all([
-            axios.get("http://localhost:3001/people/princes", {
+            axios.get("http://localhost:3001/people/princes/count", {
               params: { barangay: selectedBarangayName },
             }),
-            axios.get("http://localhost:3001/people/generals", {
+            axios.get("http://localhost:3001/people/generals/count", {
               params: { barangay: selectedBarangayName },
             }),
           ]);
