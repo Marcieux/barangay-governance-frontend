@@ -7,22 +7,41 @@ export const BarangayProvider = ({ children }) => {
   const [barangays, setBarangays] = useState([]);
   const [people, setPeople] = useState([]);
   const [selectedBarangay, setSelectedBarangay] = useState("");
-  
+
+  // Fetch barangays only once on component mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchBarangays = async () => {
       try {
-        const [barangaysRes, peopleRes] = await Promise.all([
-          axios.get("http://localhost:3001/barangay"),
-          axios.get("http://localhost:3001/people"),
-        ]);
-        setBarangays(barangaysRes.data);
-        setPeople(peopleRes.data);
+        const response = await axios.get("http://localhost:3001/barangay");
+        setBarangays(response.data);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching barangays:", err);
       }
     };
-    fetchData();
+    fetchBarangays();
   }, []);
+
+  // Fetch people whenever a barangay is selected
+  useEffect(() => {
+    const fetchPeopleByBarangay = async () => {
+      if (selectedBarangay && selectedBarangay.barangay_name) {
+        try {
+          const response = await axios.get(
+            "http://localhost:3001/people/by-barangay",
+            {
+              params: { barangay: selectedBarangay.barangay_name },
+            }
+          );
+          setPeople(response.data);
+        } catch (err) {
+          console.error("Error fetching people:", err);
+        }
+      } else {
+        setPeople([]);
+      }
+    };
+    fetchPeopleByBarangay();
+  }, [selectedBarangay]);
 
   return (
     <BarangayContext.Provider
