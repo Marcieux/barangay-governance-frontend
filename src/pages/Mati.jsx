@@ -75,6 +75,7 @@ export default function Mati() {
               number: prince.number,
               precinct: prince.precinct,
               prince_id: prince._id, // This ID of prince in the people collection.
+              purok: prince.purok
             };
           });
 

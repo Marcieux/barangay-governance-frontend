@@ -78,6 +78,7 @@ export default function Wtc() {
               <th className="border border-gray-300 p-2">Name</th>
               <th className="border border-gray-300 p-2">Phone No.</th>
               <th className="border border-gray-300 p-2">Precinct</th>
+              <th className="border border-gray-300 p-2">Purok</th>
               <th className="border border-gray-300 p-2">No. of FL</th>
               <th className="border border-gray-300 p-2">Total DL</th>
               <th className="border border-gray-300 p-2">Remarks</th>
@@ -95,6 +96,7 @@ export default function Wtc() {
                   </td>
                   <td className="border border-gray-300 p-2">{general.number}</td>
                   <td className="border border-gray-300 p-2">{general.precinct}</td>
+                  <td className="border border-gray-300 p-2">{general.purok}</td>
                   <td className="border border-gray-300 p-2">-</td>
                   <td className="border border-gray-300 p-2">-</td>
                   <td className="border border-gray-300 p-2">-</td>

@@ -105,6 +105,7 @@ export default function AngatKa() {
             general_name: general.general_name,
             number: matchingGeneral?.number || "-",
             precinct: matchingGeneral?.precinct || "-",
+            purok: general.purok || "-",
           };
         });
 
@@ -157,6 +158,7 @@ export default function AngatKa() {
               <th className="border border-gray-300 p-2">Name</th>
               <th className="border border-gray-300 p-2">Phone No.</th>
               <th className="border border-gray-300 p-2">Precinct</th>
+              <th className="border border-gray-300 p-2">Purok</th>
               <th className="border border-gray-300 p-2">No. of APC</th>
               <th className="border border-gray-300 p-2">No. of FL</th>
               <th className="border border-gray-300 p-2">Total DL</th>
@@ -188,6 +190,7 @@ export default function AngatKa() {
                   <td className="border border-gray-300 p-2">
                     {prince.precinct}
                   </td>
+                  <td className="border border-gray-300 p-2">{prince.purok}</td>
                   <td className="border border-gray-300 p-2">
                     {getGeneralCount(prince.name)}
                   </td>
