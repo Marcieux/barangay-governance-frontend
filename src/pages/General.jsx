@@ -15,8 +15,6 @@ export default function General() {
   const [generalName, setGeneralName] = useState("");
   const [generalSearchText, setGeneralSearchText] = useState("");
   const [generalSuggestions, setGeneralSuggestions] = useState([]);
-  const [isGeneralAdded, setIsGeneralAdded] = useState(false);
-  const [showGeneralPurok, setShowGeneralPurok] = useState(false);
   const [generalPurok, setGeneralPurok] = useState("");
   const [kingId, setKingId] = useState(null);
   const [kingName, setKingName] = useState("");
@@ -67,21 +65,19 @@ export default function General() {
 
   const handleBarangayChange = (barangay) => {
     setSelectedBarangay(barangay);
-    setIsGeneralAdded(false);
     setGeneralId(null);
     setGeneralName("");
     setGeneralSearchText("");
-    setShowGeneralPurok(false);
   };
 
   const handleAddGeneral = async () => {
     if (!kingId) {
-      alert("Set King first.");
+      alert("Set Angat Chair first.");
       return;
     }
 
     if (!princeId) {
-      alert("Select a prince first.");
+      alert("Select an ABLC first.");
       return;
     }
 
@@ -93,7 +89,7 @@ export default function General() {
       // Check if the selected person is already a prince
       if (personData.role === "prince") {
         alert(
-          `This person '${generalName}' is already a prince and cannot be added as a general.`
+          `This person '${generalName}' is already an ABLC and cannot be added as a APC.`
         );
         return;
       }
@@ -101,7 +97,7 @@ export default function General() {
       // Check if the selected person is already a general
       if (personData.role === "general") {
         alert(
-          `'${generalName}' is already a general and cannot be added again.`
+          `This person '${generalName}' is already an APC and cannot be added again.`
         );
         return;
       }
@@ -111,7 +107,7 @@ export default function General() {
 
       if (
         window.confirm(
-          `Are you sure you want to set '${generalName}' as general of '${selectedBarangay.barangay_name}'?`
+          `Are you sure you want to set '${generalName}' as APC of '${selectedBarangay.barangay_name}'?`
         )
       ) {
         await axios.put(`http://localhost:3001/people/${generalId}`, {
@@ -131,13 +127,11 @@ export default function General() {
           prince_name: princeName,
         });
 
-        alert("General has been added successfully!");
-        setShowGeneralPurok(true);
-        setIsGeneralAdded(true);
+        alert("APC has been added successfully!");
       }
     } catch (err) {
-      console.error("Error adding general:", err);
-      alert("An error occurred while adding the general.");
+      console.error("Error adding APC:", err);
+      alert("An error occurred while adding the APC.");
     }
   };
 
@@ -146,7 +140,6 @@ export default function General() {
     setGeneralName(person.name);
     setGeneralSearchText(person.name);
     setGeneralSuggestions([]);
-    setShowGeneralPurok(false);
   };
 
   const handleSelectPrince = (id, name) => {
@@ -156,17 +149,41 @@ export default function General() {
 
   const handlePurokAdded = async (purokData) => {
     try {
-      await axios.put(`http://localhost:3001/general/${generalId}`, {
-        purok: purokData,
-      });
+      const response = await axios.get(
+        `http://localhost:3001/general/${generalId}`
+      );
+      const generalData = response.data;
 
-      setGeneralPurok(purokData);
-      setShowGeneralPurok(false);
-      setGeneralSearchText("");
-      alert("Purok added successfully!");
+      if (!generalData || !generalData.general_id) {
+        alert("Add the APC first before assigning a Purok.");
+        return;
+      }
+
+      if (generalData.purok?.trim()) {
+        alert("This APC already has a Purok assigned.");
+        return;
+      }
+
+      const updateResponse = await axios.put(
+        `http://localhost:3001/general/${generalId}`,
+        { purok: purokData }
+      );
+
+      // Notify user only if update is successful
+      if ([200, 201].includes(updateResponse.status)) {
+        setGeneralPurok(purokData); // Update the state
+        alert("APC's Purok added successfully!");
+      } else {
+        alert("Failed to add Purok. Please try again.");
+      }
     } catch (err) {
-      console.error("Error updating Purok:", err);
-      alert("An error occurred while updating the Purok.");
+      // Handle errors more concisely
+      if (err.response?.status === 404) {
+        alert("Add the APC first before assigning a Purok.");
+      } else {
+        console.error("Error during Purok addition:", err);
+        alert("An error occurred while updating the Purok.");
+      }
     }
   };
 
@@ -184,12 +201,7 @@ export default function General() {
           handlePersonSelect={handleGeneralSelect}
           handleAddGeneral={handleAddGeneral}
         />
-        {isGeneralAdded && showGeneralPurok && (
-          <GeneralPurok
-            personId={generalId}
-            onSuccess={handlePurokAdded}
-          />
-        )}
+        <GeneralPurok personId={generalId} onSuccess={handlePurokAdded} />
       </div>
     </div>
   );
