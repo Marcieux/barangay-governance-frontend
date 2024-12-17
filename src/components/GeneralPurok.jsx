@@ -5,7 +5,7 @@ export default function GeneralPurok({ personId, onSuccess }) {
   const [generalPurok, setGeneralPurok] = useState("");
 
   const handleGeneralPurokChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.toUpperCase();
     setGeneralPurok(value);
   };
   
@@ -16,12 +16,11 @@ export default function GeneralPurok({ personId, onSuccess }) {
           await axios.put(`http://localhost:3001/people/${personId}`, {
             purok: generalPurok,
           });
-          alert("General's Purok added successfully!");
           setGeneralPurok("");
           onSuccess(generalPurok);
         } catch (err) {
           console.error("Error adding Purok:", err);
-          alert("An error occurred while adding the general's Purok.");
+          alert("An error occurred while adding the APC's Purok.");
         }
       } else {
         alert("Please enter Purok.");

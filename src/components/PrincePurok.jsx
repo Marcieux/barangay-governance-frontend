@@ -5,7 +5,7 @@ export default function PrincePurok({ personId, onSuccess }) {
   const [princePurok, setPrincePurok] = useState("");
 
   const handlePrincePurokChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.toUpperCase();
     setPrincePurok(value);
   };
 
@@ -16,12 +16,11 @@ export default function PrincePurok({ personId, onSuccess }) {
           await axios.put(`http://localhost:3001/people/${personId}`, {
             purok: princePurok,
           });
-          alert("Prince's Purok added successfully!");
           setPrincePurok("");
           onSuccess(princePurok);
         } catch (err) {
           console.error("Error adding Purok:", err);
-          alert("An error occurred while adding the prince's Purok.");
+          alert("An error occurred while adding the ABLC's Purok.");
         }
       } else {
         alert("Please enter Purok.");
