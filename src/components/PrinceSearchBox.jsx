@@ -17,7 +17,7 @@ export default function PrinceSearchBox(props) {
       <div className="flex flex-col gap-2">
         <div className="flex justify-between gap-5">
           <input
-            placeholder="Search Prince"
+            placeholder="Search ABLC"
             className="w-full p-2 border border-red-500 rounded outline-none text-sm"
             type="text"
             value={searchText}

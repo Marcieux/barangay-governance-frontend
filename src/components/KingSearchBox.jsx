@@ -31,7 +31,7 @@ export default function KingSearchBox(props) {
             type="text"
             onChange={handleSearchChange}
             value={searchText}
-            placeholder="Search King"
+            placeholder="Search Angat Chair "
             className="w-full p-2 border border-red-500 rounded outline-none text-sm"
           />
         )}
