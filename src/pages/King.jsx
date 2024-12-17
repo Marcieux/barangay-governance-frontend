@@ -34,7 +34,7 @@ export default function King() {
   const handleBarangayChange = (barangay) => {
     if (!canSwitchBarangay) {
       alert(
-        "Please assign a number to the added king before switching barangays."
+        "Please assign a number to the added Angat Chair before switching barangays."
       );
       return;
     }
@@ -45,7 +45,7 @@ export default function King() {
   const handleAddKing = async () => {
     if (
       window.confirm(
-        `Are you sure you want to set '${kingName}' as king of '${selectedBarangay.barangay_name}'?`
+        `Are you sure you want to set '${kingName}' as Angat Chair of '${selectedBarangay.barangay_name}'?`
       )
     ) {
       try {
@@ -58,7 +58,7 @@ export default function King() {
           king_id: kingId,
           king_name: kingName,
         });
-        alert("King has been added successfully!");
+        alert("Angat Chair has been added successfully!");
         const { data } = await axios.get("http://localhost:3001/barangay");
         setBarangays(data);
 
@@ -67,8 +67,8 @@ export default function King() {
         setShowKingNumber(true);
         setIsKingNumberAssigned(false);
       } catch (err) {
-        console.error("Error adding king:", err);
-        alert("An error occurred while adding the king.");
+        console.error("Error adding Angat Chair:", err);
+        alert("An error occurred while adding the Angat Chair.");
       }
     }
   };
