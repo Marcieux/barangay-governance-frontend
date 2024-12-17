@@ -15,23 +15,19 @@ export default function Prince({ onSelectPrince = () => {} }) {
   const [princeName, setPrinceName] = useState("");
   const [princeSearchText, setPrinceSearchText] = useState("");
   const [princeSuggestions, setPrinceSuggestions] = useState([]);
-  const [isPrinceAdded, setIsPrinceAdded] = useState(false);
-  const [showPrincePurok, setShowPrincePurok] = useState(false);
   const [princePurok, setPrincePurok] = useState("");
   const [kingId, setKingId] = useState(null);
   const [kingName, setKingName] = useState("");
   const handleBarangayChange = (barangay) => {
     setSelectedBarangay(barangay);
-    setIsPrinceAdded(false);
     setPrinceId(null);
     setPrinceName("");
     setPrinceSearchText("");
-    setShowPrincePurok(false);
   };
 
   const handleAddPrince = async () => {
     if (!kingId) {
-      alert("Set King first.");
+      alert("Set Angat Chair first.");
       return;
     }
 
@@ -43,7 +39,7 @@ export default function Prince({ onSelectPrince = () => {} }) {
       // Check if the prince already has a "general" role
       if (personData.role === "general") {
         alert(
-          `This person '${princeName}' already has a general role and cannot be added as prince.`
+          `This person '${princeName}' is already an APC and cannot be added as ABLC.`
         );
         return;
       }
@@ -57,14 +53,14 @@ export default function Prince({ onSelectPrince = () => {} }) {
         selectedBarangay.prince_id.includes(princeId)
       ) {
         alert(
-          `This person is already a prince in '${selectedBarangay.barangay_name}'.`
+          `This person is already ABLC in '${selectedBarangay.barangay_name}'.`
         );
         return;
       }
 
       if (
         window.confirm(
-          `Are you sure you want to set '${princeName}' as prince of '${selectedBarangay.barangay_name}'?`
+          `Are you sure you want to set '${princeName}' as an ABLC of '${selectedBarangay.barangay_name}'?`
         )
       ) {
         try {
@@ -99,17 +95,15 @@ export default function Prince({ onSelectPrince = () => {} }) {
             prince_id: [...prevBarangay.prince_id, newPrinceId.prince_id], // Make sure to include the new prince in the updated state
           }));
 
-          alert("Prince has been added successfully!");
-          setShowPrincePurok(true);
-          setIsPrinceAdded(true);
+          alert("ABLC has been added successfully!");
         } catch (err) {
-          console.error("Error adding prince:", err);
-          alert("An error occurred while adding the prince.");
+          console.error("Error adding ABLC:", err);
+          alert("An error occurred while adding the ABLC.");
         }
       }
     } catch (err) {
-      console.error("Error fetching prince data:", err);
-      alert("An error occurred while fetching the prince's data.");
+      console.error("Error fetching ABLC data:", err);
+      alert("An error occurred while fetching the ABLC's data.");
     }
   };
 
@@ -160,25 +154,52 @@ export default function Prince({ onSelectPrince = () => {} }) {
     setPrinceName(person.name);
     setPrinceSearchText(person.name);
     setPrinceSuggestions([]);
-    setShowPrincePurok(false);
 
     // Pass the selected prince's ID and name to the parent component (General)
     onSelectPrince(person._id, person.name);
   };
 
   const handlePurokAdded = async (purokData) => {
-    // Update the prince's Purok data in the database
     try {
-      await axios.put(`http://localhost:3001/prince/${princeId}`, {
-        purok: purokData, // Update the prince's Purok field
-      });
+      // Fetch prince data to check if it exists and if Purok is already assigned
+      const response = await axios.get(
+        `http://localhost:3001/prince/${princeId}`
+      );
+      const princeData = response.data;
 
-      setPrincePurok(purokData);
-      setShowPrincePurok(false);
-      alert("Purok added successfully!");
+      // Validate if the prince exists
+      if (!princeData || !princeData.prince_id) {
+        alert("Add the ABLC first before assigning a Purok.");
+        return;
+      }
+
+      // Check if Purok is already assigned
+      if (princeData.purok?.trim()) {
+        alert("This ABLC already has a Purok assigned.");
+        return;
+      }
+
+      // Proceed to update Purok
+      const updateResponse = await axios.put(
+        `http://localhost:3001/prince/${princeId}`,
+        { purok: purokData }
+      );
+
+      // Notify user only if update is successful
+      if ([200, 201].includes(updateResponse.status)) {
+        setPrincePurok(purokData); // Update the state
+        alert("ABLC's Purok added successfully!");
+      } else {
+        alert("Failed to add Purok. Please try again.");
+      }
     } catch (err) {
-      console.error("Error updating Purok:", err);
-      alert("An error occurred while updating the Purok.");
+      // Handle errors more concisely
+      if (err.response?.status === 404) {
+        alert("Add the ABLC first before assigning a Purok.");
+      } else {
+        console.error("Error during Purok addition:", err);
+        alert("An error occurred while updating the Purok.");
+      }
     }
   };
 
@@ -193,9 +214,7 @@ export default function Prince({ onSelectPrince = () => {} }) {
           handlePersonSelect={handlePrinceSelect}
           handleAddPrince={handleAddPrince}
         />
-        {isPrinceAdded && showPrincePurok && (
-          <PrincePurok personId={princeId} onSuccess={handlePurokAdded} />
-        )}
+        <PrincePurok personId={princeId} onSuccess={handlePurokAdded} />
       </div>
     </div>
   );
