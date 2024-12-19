@@ -17,7 +17,8 @@ import Coastal from "./pages/Coastal";
 import Mati from "./pages/Mati";
 import Ablc from "./pages/Ablc";
 import Apc from "./pages/Apc";
-import NotFound from "./pages/NotFound";
+import NotFound from "./modals/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   useEffect(() => {
@@ -33,23 +34,34 @@ function App() {
     <BarangayProvider>
       <main className="min-h-screen flex items-center justify-center bg-red-500">
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/encode-name/king" element={<King />} />
-            <Route path="/encode-name/set-prince" element={<Prince />} />
-            <Route path="/encode-name/set-general" element={<General />} />
-            <Route path="/encode-name/set-cafgu" element={<Cafgu />} />
-            <Route path="/encode-name/set-purok-chair" element={<PurokChair />} />
-            <Route path="/encode-name/set-tagapamayapa" element={<TagaPamayapa />} />
-            <Route path="/encode-name/bhw" element={<Bhw />} />
-            <Route path="/encode-name/tanod" element={<Tanod />} />
-            <Route path="/encode-name/public-safety" element={<PublicSafety />} />
-            <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
-            <Route path="/encode-name/coastal" element={<Coastal />} />
-            <Route path="/get-names/" element={<Mati />} />
-            <Route path="/get-names/:barangay/ablc" element={<Ablc />} />
-            <Route path="/get-names/:barangay/ablc/:id" element={<Apc />} />
-            <Route path="*" element={<NotFound />}/>
+        <Routes>
+            {/* Public Route */}
+            <Route path="/login" element={<Login />} />
+
+            {/* Encoder Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["encoder", "superadmin", "admin"]} />}>
+              <Route path="/encode-name/king" element={<King />} />
+              <Route path="/encode-name/set-prince" element={<Prince />} />
+              <Route path="/encode-name/set-general" element={<General />} />
+              <Route path="/encode-name/set-cafgu" element={<Cafgu />} />
+              <Route path="/encode-name/set-purok-chair" element={<PurokChair />} />
+              <Route path="/encode-name/set-tagapamayapa" element={<TagaPamayapa />} />
+              <Route path="/encode-name/bhw" element={<Bhw />} />
+              <Route path="/encode-name/tanod" element={<Tanod />} />
+              <Route path="/encode-name/public-safety" element={<PublicSafety />} />
+              <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
+              <Route path="/encode-name/coastal" element={<Coastal />} />
+            </Route>
+
+            {/* Admin/Superadmin Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["superadmin", "admin"]} />}>
+              <Route path="/get-names" element={<Mati />} />
+              <Route path="/get-names/:barangay/ablc" element={<Ablc />} />
+              <Route path="/get-names/:barangay/ablc/:id" element={<Apc />} />
+            </Route>
+
+            {/* Fallback Route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </main>
