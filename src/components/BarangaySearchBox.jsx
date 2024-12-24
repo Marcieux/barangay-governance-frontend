@@ -12,7 +12,6 @@ export default function BarangaySearchBox() {
   const handleBarangaySelect = (barangay) => {
     setSelectedBarangay(barangay._id);
     setSearchText(barangay.barangay_name);
-    setSearchText("");
 
     navigate(`/get-names?barangay=${barangay.barangay_name}`);
   };

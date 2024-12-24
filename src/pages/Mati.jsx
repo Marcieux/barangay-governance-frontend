@@ -269,7 +269,7 @@ export default function Mati() {
       )}
 
       <div
-        className={`bg-white p-6 rounded shadow-md w-[400px] space-y-4 ${
+        className={`bg-white p-3 rounded sm:right-40 md:right-12 lg:right-20 shadow-md w-[400px] space-y-4 ${
           isBarangaySelected ? "absolute top-20 right-20" : "relative"
         }`}
       >
