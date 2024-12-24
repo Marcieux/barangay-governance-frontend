@@ -16,6 +16,7 @@ import BantayDagat from "./pages/BantayDagat";
 import Coastal from "./pages/Coastal";
 import Mati from "./pages/Mati";
 import Ablc from "./pages/Ablc";
+import AblcApc from "./pages/AblcApc";
 import Apc from "./pages/Apc";
 import NotFound from "./modals/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -57,7 +58,8 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={["superadmin", "admin"]} />}>
               <Route path="/get-names" element={<Mati />} />
               <Route path="/get-names/:barangay/ablc" element={<Ablc />} />
-              <Route path="/get-names/:barangay/ablc/:id" element={<Apc />} />
+              <Route path="/get-names/:barangay/ablc/:id" element={<AblcApc />} />
+              <Route path="/get-names/:barangay/apc/" element={<Apc />} />
             </Route>
 
             {/* Fallback Route */}

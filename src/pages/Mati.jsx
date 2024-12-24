@@ -52,14 +52,17 @@ export default function Mati() {
     }
   }, [selectedBarangayName]);
 
-  // Function to handle click on KA (Princes)
+  // Function to handle click on ABLC (Princes)
   const handleABLCClick = async () => {
     if (selectedBarangayName) {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
-        const response = await axios.get("http://localhost:3001/people/by-barangay", {
-          params: { barangay: selectedBarangayName },
-        }); 
+        const response = await axios.get(
+          "http://localhost:3001/people/by-barangay",
+          {
+            params: { barangay: selectedBarangayName },
+          }
+        );
         const people = response.data;
 
         // Filter the princes based on barangay name and role
@@ -110,7 +113,7 @@ export default function Mati() {
           },
         });
       } catch (error) {
-        console.error("Failed to fetch or process princes:", error);
+        console.error("Failed to fetch or process ABLCs:", error);
       } finally {
         setLoading(false); // Stop loading
       }
@@ -119,10 +122,77 @@ export default function Mati() {
     }
   };
 
-  // Function to handle click on WTC (Generals)
-  const handleAPCClick = () => {
-    if (selectedBarangayName) {
-      navigate(`/get-names/${selectedBarangayName}/apc`);
+  // Function to handle click on APC (Generals)
+  const handleAPCClick = async () => {
+    if (selectedBarangayName)
+    setLoading(true);
+
+    try {
+      // Fetch the people data to filter generals based on the barangay and role
+      const peopleResponse = await axios.get(
+        "http://localhost:3001/people/by-barangay",
+        {
+          params: { barangay: selectedBarangayName },
+        }
+      );
+      const people = peopleResponse.data;
+
+      // Filter generals from the people collection
+      const generalDetails = people
+        .filter(
+          (person) =>
+            person.barangay_name?.toLowerCase() ===
+              selectedBarangayName.toLowerCase() && person.role === "general"
+        )
+        .map((general) => ({
+          name: general.name,
+          number: general.number,
+          precinct: general.precinct,
+          general_id: general._id,
+        }));
+
+      // Fetch the general data for the selected barangay
+      const generalResponse = await axios.get("http://localhost:3001/general", {
+        params: { barangay: selectedBarangayName },
+      });
+      const generalData = generalResponse.data;
+
+      // Filter generalData to match the selected barangay
+      const filteredGeneralData = generalData.filter(
+        (general) =>
+          general.barangay_name?.toLowerCase() ===
+          selectedBarangayName.toLowerCase()
+      );
+
+      // Merge general data with their details from the people collection
+      const mappedGenerals = filteredGeneralData.map((general) => {
+        const matchingGeneral = generalDetails.find(
+          (person) => person.general_id === general.general_id
+        );
+
+        return {
+          general_id: general.general_id,
+          general_name: general.general_name,
+          prince_id: general.prince_id,
+          prince_name: general.prince_name,
+          number: matchingGeneral?.number || "-",
+          precinct: matchingGeneral?.precinct || "-",
+          purok: general.purok || "-",
+        };
+      });
+
+      // Navigate and pass the generals with the details
+      navigate(`/get-names/${selectedBarangayName}/apc/`, {
+        state: {
+          barangayName: selectedBarangayName,
+          kingName: kingName,
+          generals: mappedGenerals,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching APCs:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

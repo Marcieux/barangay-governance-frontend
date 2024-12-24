@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
-export default function AngatKa() {
+export default function Ablc() {
   const location = useLocation();
   const navigate = useNavigate();
   const barangayName = location.state?.barangayName || "No barangay selected";
@@ -119,7 +119,7 @@ export default function AngatKa() {
         },
       });
     } catch (error) {
-      console.error("Error fetching generals:", error);
+      console.error("Error fetching APCs:", error);
     } finally {
       setLoading(false);
     }
@@ -150,9 +150,9 @@ export default function AngatKa() {
         />
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto overflow-y-auto mt-4 max-h-[400px]">
         <table className="table-auto w-full border-collapse border border-gray-300 text-sm">
-          <thead>
+          <thead className="sticky -top-1">
             <tr className="bg-gray-100 text-left">
               <th className="border border-gray-300 p-2">#</th>
               <th className="border border-gray-300 p-2">Name</th>
