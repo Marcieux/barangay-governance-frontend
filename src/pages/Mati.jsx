@@ -269,8 +269,8 @@ export default function Mati() {
       )}
 
       <div
-        className={`bg-white p-3 rounded sm:right-40 md:right-12 lg:right-20 shadow-md w-[400px] space-y-4 ${
-          isBarangaySelected ? "absolute top-20 right-20" : "relative"
+        className={`bg-white p-3 rounded shadow-md w-[400px] space-y-4 ${
+          isBarangaySelected ? "absolute top-20 sm:right-40 md:right-12 lg:right-20 right-0" : "relative"
         }`}
       >
         <BarangaySearchBox />
