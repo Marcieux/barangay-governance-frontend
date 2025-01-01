@@ -13,6 +13,19 @@ export default function PrincePurok({ personId, onSuccess }) {
     if (princePurok)
       if (window.confirm("Are you sure you want to add this Purok?")) {
         try {
+          // Fetch current data of the person to check if Purok is already assigned
+          const response = await axios.get(
+            `http://localhost:3001/people/${personId}`
+          );
+          const personData = response.data;
+
+          // Check if Purok is already assigned in the people collection
+          if (personData.purok?.trim()) {
+            alert("This ABLC already has a Purok assigned.");
+            return;
+          }
+
+          // Proceed with the update if Purok is not already assigned
           await axios.put(`http://localhost:3001/people/${personId}`, {
             purok: princePurok,
           });
@@ -22,8 +35,6 @@ export default function PrincePurok({ personId, onSuccess }) {
           console.error("Error adding Purok:", err);
           alert("An error occurred while adding the ABLC's Purok.");
         }
-      } else {
-        alert("Please enter Purok.");
       }
   };
 
