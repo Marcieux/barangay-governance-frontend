@@ -18,6 +18,7 @@ import Mati from "./pages/Mati";
 import Ablc from "./pages/Ablc";
 import AblcApc from "./pages/AblcApc";
 import Apc from "./pages/Apc";
+import FamilyHead from "./pages/FamilyHead";
 import NotFound from "./modals/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -52,6 +53,7 @@ function App() {
               <Route path="/encode-name/public-safety" element={<PublicSafety />} />
               <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
               <Route path="/encode-name/coastal" element={<Coastal />} />
+              <Route path="/encode-name/set-fh" element={<FamilyHead />} />
             </Route>
 
             {/* Admin/Superadmin Routes */}
