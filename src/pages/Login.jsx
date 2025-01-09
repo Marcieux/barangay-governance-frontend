@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -78,13 +79,26 @@ export default function Login() {
             Password
           </label>
 
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-red-500 rounded outline-none text-sm"
-            required
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"} // Toggle between text and password types
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border border-red-500 rounded outline-none text-sm"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+              className="absolute right-2 top-2 text-red-500"
+            >
+              <i
+                className={`fa-regular ${
+                  showPassword ? "fa-eye" : "fa-eye-slash"
+                }`}
+              ></i>
+            </button>
+          </div>
         </div>
 
         <button
