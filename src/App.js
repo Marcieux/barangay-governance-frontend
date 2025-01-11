@@ -19,6 +19,7 @@ import Ablc from "./pages/Ablc";
 import AblcApc from "./pages/AblcApc";
 import Apc from "./pages/Apc";
 import FamilyHead from "./pages/FamilyHead";
+import ReferralPage from "./pages/ReferralPage";
 import NotFound from "./modals/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -54,6 +55,7 @@ function App() {
               <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
               <Route path="/encode-name/coastal" element={<Coastal />} />
               <Route path="/encode-name/set-fh" element={<FamilyHead />} />
+              <Route path="/encode-name/set-referral-page" element={<ReferralPage />} />
             </Route>
 
             {/* Admin/Superadmin Routes */}
