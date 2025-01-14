@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import PurokSearchBox from "./PurokSearchBox";
+import BarangayContext from "../contexts/BarangayContext";
 
 export default function FamilyLeaderPurok({ personId }) {
-  const [flPurok, setFlPurok] = useState("");
-
-  const handleFlPurokChange = (e) => {
-    const value = e.target.value.toUpperCase();
-    setFlPurok(value);
-  };
+  const { selectedBarangay } = useContext(BarangayContext);
+  const [selectedPurok, setSelectedPurok] = useState("");
 
   const handleAddPurok = async () => {
-    if (!flPurok) {
+    if (!selectedPurok) {
       alert("Please enter a valid Purok before proceeding.");
       return;
     }
@@ -22,7 +20,7 @@ export default function FamilyLeaderPurok({ personId }) {
     try {
       // Fetch the leader data for validation
       const leaderResponse = await axios.get(
-        `http://localhost:3001/leader/${personId}`
+        `/api/leader/${personId}`
       );
 
       if (!leaderResponse.data.success) {
@@ -34,8 +32,8 @@ export default function FamilyLeaderPurok({ personId }) {
       const flData = leaderResponse.data.data;
 
       // Fetch the person's data
-      const personResponse = await axios.get(
-        `http://localhost:3001/people/${personId}`
+      const personResponse = await axios.get( 
+        `/api/people/${personId}`
       );
 
       const personData = personResponse.data;
@@ -48,20 +46,20 @@ export default function FamilyLeaderPurok({ personId }) {
 
       // Proceed with updates
       const personUpdate = axios.put(
-        `http://localhost:3001/people/${personId}`,
-        { purok: flPurok }
+        `/api/people/${personId}`,
+        { purok: selectedPurok }
       );
 
       const leaderUpdate = axios.put(
-        `http://localhost:3001/leader/${personId}`,
-        { purok: flPurok }
+        `/api/leader/${personId}`,
+        { purok: selectedPurok }
       );
 
       // Wait for both updates to complete
       await Promise.all([personUpdate, leaderUpdate]);
 
       alert("Purok added successfully!");
-      setFlPurok(""); // Reset the input field
+      setSelectedPurok(""); // Reset the input field
     } catch (err) {
       console.error("Error adding Purok:", err);
       alert(
@@ -78,12 +76,9 @@ export default function FamilyLeaderPurok({ personId }) {
       </label>
 
       <div className="flex justify-between">
-        <input
-          type="text"
-          placeholder="Enter Purok..."
-          value={flPurok}
-          onChange={handleFlPurokChange}
-          className="p-2 border border-red-500 rounded outline-none text-sm"
+        <PurokSearchBox
+          purokList={selectedBarangay?.purok_list || []}
+          setSelectedPurok={setSelectedPurok}
         />
         <button
           onClick={handleAddPurok}
