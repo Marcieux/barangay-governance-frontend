@@ -1,48 +1,46 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
 import BarangaySearchBox from "../components/BarangaySearchBox";
 import BarangayContext from "../contexts/BarangayContext";
 import Loading from "../components/Loading"; // Adjust the path to match your file structure
 
 export default function Mati() {
-  const { barangays } = useContext(BarangayContext);
-  const [searchParams] = useSearchParams();
-  const selectedBarangayName = searchParams.get("barangay");
+  const { selectedBarangay, setSelectedBarangay } =
+    useContext(BarangayContext);
   const [showStructure, setShowStructure] = useState(false);
   const [princeCount, setPrinceCount] = useState(0);
   const [generalCount, setGeneralCount] = useState(0);
+  const [leaderCount, setLeaderCount] = useState(0);
   const [isBarangaySelected, setIsBarangaySelected] = useState(false); // Tracks if a barangay is selected
   const [loading, setLoading] = useState(false); // Loading state for fetch calls
   const navigate = useNavigate();
 
-  // Fetch the barangay data based on the selected barangay
-  const selectedBarangayData = barangays.find(
-    (barangay) => barangay.barangay_name === selectedBarangayName
-  );
-  const kingName = selectedBarangayData ? selectedBarangayData.king_name : "";
-
   // Fetch the prince and generals from the API
   useEffect(() => {
-    if (selectedBarangayName) {
+    if (selectedBarangay) {
       const fetchData = async () => {
         setLoading(true);
         try {
-          const [princesRes, generalsRes] = await Promise.all([
-            axios.get("http://localhost:3001/people/princes/count", {
-              params: { barangay: selectedBarangayName },
+          const [princesRes, generalsRes, leaderRes] = await Promise.all([
+            axios.get("http://localhost:3001/prince/stats/count", {
+              params: { barangay: selectedBarangay._id },
             }),
-            axios.get("http://localhost:3001/people/generals/count", {
-              params: { barangay: selectedBarangayName },
+            axios.get("http://localhost:3001/general/stats/count", {
+              params: { barangay: selectedBarangay._id },
+            }),
+            axios.get("http://localhost:3001/leader/stats/count", {
+              params: { barangay: selectedBarangay._id },
             }),
           ]);
           setPrinceCount(princesRes.data.count || 0);
           setGeneralCount(generalsRes.data.count || 0);
+          setLeaderCount(leaderRes.data.count || 0);
         } catch (error) {
           console.error("Error fetching data:", error);
           setPrinceCount(0);
           setGeneralCount(0);
+          setLeaderCount(0);
         } finally {
           setLoading(false);
         }
@@ -50,27 +48,27 @@ export default function Mati() {
 
       fetchData();
     }
-  }, [selectedBarangayName]);
+  }, [selectedBarangay]);
 
   // Function to handle click on ABLC (Princes)
   const handleABLCClick = async () => {
-    if (selectedBarangayName) {
+    if (selectedBarangay) {
       setLoading(true);
       try {
         const response = await axios.get(
           "http://localhost:3001/people/by-barangay",
           {
-            params: { barangay: selectedBarangayName },
+            params: { barangay: selectedBarangay._id },
           }
         );
         const people = response.data;
 
-        // Filter the princes based on barangay name and role
+        // Filter the princes based on barangay id and role
         const princes = people
           .filter(
             (person) =>
-              person.barangay_name?.toLowerCase() ===
-                selectedBarangayName.toLowerCase() && person.role === "prince"
+              person.barangay_id === selectedBarangay._id &&
+              person.role === "prince"
           )
           .map((prince) => {
             return {
@@ -78,7 +76,7 @@ export default function Mati() {
               number: prince.number,
               precinct: prince.precinct,
               prince_id: prince._id, // This ID of prince in the people collection.
-              purok: prince.purok
+              purok: prince.purok,
             };
           });
 
@@ -104,10 +102,10 @@ export default function Mati() {
         });
 
         // Navigate to AngatKa page with the relevant data
-        navigate(`/get-names/${selectedBarangayName}/ablc`, {
+        navigate(`/get-names/${selectedBarangay.barangay_name}/ablc`, {
           state: {
-            barangayName: selectedBarangayName,
-            kingName: kingName,
+            barangayName: selectedBarangay.barangay_name,
+            kingName: selectedBarangay.king_name,
             princes: princes,
             princeGeneral: princeGeneral,
           },
@@ -124,84 +122,162 @@ export default function Mati() {
 
   // Function to handle click on APC (Generals)
   const handleAPCClick = async () => {
-    if (selectedBarangayName)
-    setLoading(true);
+    if (selectedBarangay) {
+      setLoading(true);
+      try {
+        // Fetch the people data to filter generals based on the barangay and role
+        const peopleResponse = await axios.get(
+          "http://localhost:3001/people/by-barangay",
+          {
+            params: { barangay: selectedBarangay._id },
+          }
+        );
+        const people = peopleResponse.data;
 
-    try {
-      // Fetch the people data to filter generals based on the barangay and role
-      const peopleResponse = await axios.get(
-        "http://localhost:3001/people/by-barangay",
-        {
-          params: { barangay: selectedBarangayName },
-        }
-      );
-      const people = peopleResponse.data;
+        // Filter generals from the people collection
+        const generalDetails = people
+          .filter(
+            (person) =>
+              person.barangay_id === selectedBarangay._id &&
+              person.role === "general"
+          )
+          .map((general) => ({
+            name: general.name,
+            number: general.number,
+            precinct: general.precinct,
+            general_id: general._id,
+          }));
 
-      // Filter generals from the people collection
-      const generalDetails = people
-        .filter(
-          (person) =>
-            person.barangay_name?.toLowerCase() ===
-              selectedBarangayName.toLowerCase() && person.role === "general"
-        )
-        .map((general) => ({
-          name: general.name,
-          number: general.number,
-          precinct: general.precinct,
-          general_id: general._id,
-        }));
+        // Fetch the general data for the selected barangay
+        const generalResponse = await axios.get(
+          "http://localhost:3001/general",
+          {
+            params: { barangay: selectedBarangay._id },
+          }
+        );
+        const generalData = generalResponse.data;
 
-      // Fetch the general data for the selected barangay
-      const generalResponse = await axios.get("http://localhost:3001/general", {
-        params: { barangay: selectedBarangayName },
-      });
-      const generalData = generalResponse.data;
-
-      // Filter generalData to match the selected barangay
-      const filteredGeneralData = generalData.filter(
-        (general) =>
-          general.barangay_name?.toLowerCase() ===
-          selectedBarangayName.toLowerCase()
-      );
-
-      // Merge general data with their details from the people collection
-      const mappedGenerals = filteredGeneralData.map((general) => {
-        const matchingGeneral = generalDetails.find(
-          (person) => person.general_id === general.general_id
+        // Filter generalData to match the selected barangay
+        const filteredGeneralData = generalData.filter(
+          (general) => general.barangay_id === selectedBarangay._id
         );
 
-        return {
-          general_id: general.general_id,
-          general_name: general.general_name,
-          prince_id: general.prince_id,
-          prince_name: general.prince_name,
-          number: matchingGeneral?.number || "-",
-          precinct: matchingGeneral?.precinct || "-",
-          purok: general.purok || "-",
-        };
-      });
+        // Merge general data with their details from the people collection
+        const mappedGenerals = filteredGeneralData.map((general) => {
+          const matchingGeneral = generalDetails.find(
+            (person) => person.general_id === general.general_id
+          );
 
-      // Navigate and pass the generals with the details
-      navigate(`/get-names/${selectedBarangayName}/apc/`, {
-        state: {
-          barangayName: selectedBarangayName,
-          kingName: kingName,
-          generals: mappedGenerals,
-        },
-      });
-    } catch (error) {
-      console.error("Error fetching APCs:", error);
-    } finally {
-      setLoading(false);
+          return {
+            general_id: general.general_id,
+            general_name: general.general_name,
+            prince_id: general.prince_id,
+            prince_name: general.prince_name,
+            number: matchingGeneral?.number || "-",
+            precinct: matchingGeneral?.precinct || "-",
+            purok: general.purok || "-",
+          };
+        });
+
+        // Navigate and pass the generals with the details
+        navigate(`/get-names/${selectedBarangay.barangay_name}/apc/`, {
+          state: {
+            barangayName: selectedBarangay.barangay_name,
+            kingName: selectedBarangay.king_name,
+            generals: mappedGenerals,
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching APCs:", error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.warn("No barangay name selected.");
+    }
+  };
+
+  const handleFLClick = async () => {
+    if (selectedBarangay) {
+      setLoading(true);
+
+      try {
+        // Fetch the people data to filter leaders based on the barangay and role
+        const peopleResponse = await axios.get(
+          "http://localhost:3001/people/by-barangay",
+          {
+            params: { barangay: selectedBarangay._id },
+          }
+        );
+        const people = peopleResponse.data;
+
+        // Filter leaders from the people collection
+        const leaderDetails = people
+          .filter(
+            (person) =>
+              person.barangay_id === selectedBarangay._id &&
+              person.role === "leader"
+          )
+          .map((leader) => ({
+            name: leader.name,
+            number: leader.number,
+            precinct: leader.precinct,
+            leader_id: leader._id,
+          }));
+
+        // Fetch the leader data for the selected barangay
+        const leaderResponse = await axios.get("http://localhost:3001/leader", {
+          params: { barangay: selectedBarangay._id },
+        });
+
+        const leaderData = leaderResponse.data.data;
+
+        // Filter leaderData to match the selected barangay
+        const filteredLeaderData = leaderData.filter(
+          (leader) => leader.barangay_id === selectedBarangay._id
+        );
+
+        // Merge leader data with their details from the people collection
+        const mappedLeaders = filteredLeaderData.map((leader) => {
+          const matchingLeader = leaderDetails.find(
+            (person) => person.leader_id === leader.leader_id
+          );
+
+          return {
+            leader_id: leader.leader_id,
+            leader_name: leader.leader_name,
+            general_id: leader.general_id,
+            general_name: leader.general_name,
+            number: matchingLeader?.number || "-",
+            precinct: matchingLeader?.precinct || "-",
+            purok: leader.purok || "-",
+          };
+        });
+
+        // Navigate to AngatKa page with the relevant data
+        navigate(`/get-names/${selectedBarangay.barangay_name}/fl`, {
+          state: {
+            barangayName: selectedBarangay.barangay_name,
+            kingName: selectedBarangay.king_name,
+            leaders: mappedLeaders,
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching FLs:", error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.warn("No barangay name selected.");
     }
   };
 
   // Update the state when a barangay is selected
   useEffect(() => {
-    if (selectedBarangayName) {
+    if (selectedBarangay) {
       setIsBarangaySelected(true);
     }
-  }, [selectedBarangayName]);
+  }, [selectedBarangay]);
 
   // Show loading spinner if fetching data
   if (loading) {
@@ -210,11 +286,11 @@ export default function Mati() {
 
   return (
     <div className="flex flex-row items-center justify-between">
-      {selectedBarangayName && (
+      {selectedBarangay && (
         <div className="text-center bg-white p-6 rounded shadow-md w-[700px] space-y-5">
           {/* <h1 className="text-3xl font-bold text-gray-800">MATI</h1> */}
           <p className="text-3xl font-bold text-gray-800 uppercase">
-            Barangay: {selectedBarangayName}
+            Barangay: {selectedBarangay.barangay_name}
           </p>
 
           <div className="flex justify-between mx-10 text-sm">
@@ -236,7 +312,7 @@ export default function Mati() {
                   <tr>
                     <td className="border p-2 font-bold">AC:</td>
                     <td className="border p-2">
-                      {kingName || "No king assigned"}
+                      {selectedBarangay.king_name || "No king assigned"}
                     </td>
                   </tr>
                   <tr className="bg-gray-50">
@@ -258,8 +334,13 @@ export default function Mati() {
                     <td className="border p-2">{generalCount}</td>
                   </tr>
                   <tr className="bg-gray-50">
-                    <td className="border p-2 font-bold">FL:</td>
-                    <td className="border p-2 font-bold">-</td>
+                    <td
+                      className="border p-2 font-bold cursor-pointer"
+                      onClick={handleFLClick}
+                    >
+                      FL:
+                    </td>
+                    <td className="border p-2">{leaderCount}</td>
                   </tr>
                 </tbody>
               </table>
@@ -270,10 +351,12 @@ export default function Mati() {
 
       <div
         className={`bg-white p-3 rounded shadow-md w-[400px] space-y-4 ${
-          isBarangaySelected ? "absolute top-20 sm:right-40 md:right-12 lg:right-20 right-0" : "relative"
+          isBarangaySelected
+            ? "absolute top-20 sm:right-40 md:right-12 lg:right-20 right-0"
+            : "relative"
         }`}
       >
-        <BarangaySearchBox />
+        <BarangaySearchBox setSelectedBarangay={setSelectedBarangay} />
       </div>
     </div>
   );

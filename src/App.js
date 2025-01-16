@@ -22,6 +22,7 @@ import FamilyHead from "./pages/FamilyHead";
 import ReferralPage from "./pages/ReferralPage";
 import NotFound from "./modals/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Fl from "./pages/Fl";
 
 function App() {
   useEffect(() => {
@@ -64,6 +65,7 @@ function App() {
               <Route path="/get-names/:barangay/ablc" element={<Ablc />} />
               <Route path="/get-names/:barangay/ablc/:id" element={<AblcApc />} />
               <Route path="/get-names/:barangay/apc/" element={<Apc />} />
+              <Route path="/get-names/:barangay/fl/" element={<Fl />} />
             </Route>
 
             {/* Fallback Route */}
