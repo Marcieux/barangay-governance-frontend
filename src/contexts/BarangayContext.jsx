@@ -24,12 +24,12 @@ export const BarangayProvider = ({ children }) => {
   // Fetch people whenever a barangay is selected
   useEffect(() => {
     const fetchPeopleByBarangay = async () => {
-      if (selectedBarangay && selectedBarangay.barangay_name) {
+      if (selectedBarangay && selectedBarangay._id) {
         try {
           const response = await axios.get(
             "http://localhost:3001/people/by-barangay",
             {
-              params: { barangay: selectedBarangay.barangay_name },
+              params: { barangay: selectedBarangay._id },
             }
           );
           setPeople(response.data);
