@@ -21,8 +21,8 @@ export default function FamilyHead() {
   const [kingName, setKingName] = useState("");
 
   // Track general data
-    const [generalId, setGeneralId] = useState(null);
-    const [generalName, setGeneralName] = useState("");
+  const [generalId, setGeneralId] = useState(null);
+  const [generalName, setGeneralName] = useState("");
 
   useEffect(() => {
     const selectedBarangayData = barangays.find(
@@ -77,8 +77,11 @@ export default function FamilyHead() {
     const value = e.target.value.toLowerCase();
     setGeneralSearchText(value);
 
-    if (!value || !selectedBarangay) {
+    if (!value) {
       setFilteredGenerals([]);
+      setGeneralSearchText("");
+      setGeneralId(null);
+      setGeneralName("");
       return;
     }
 
@@ -122,7 +125,7 @@ export default function FamilyHead() {
         );
         return;
       }
-      
+
       const { precinct } = personData;
 
       if (
