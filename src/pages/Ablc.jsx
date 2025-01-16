@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
-
+import BarangayContext from "../contexts/BarangayContext";
 export default function Ablc() {
+  const { selectedBarangay } = useContext(BarangayContext);
+
   const location = useLocation();
   const navigate = useNavigate();
   const barangayName = location.state?.barangayName || "No barangay selected";
@@ -16,7 +18,6 @@ export default function Ablc() {
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [loading, setLoading] = useState(false); // Loading state for fetch calls
   const [selectedPrinceId, setSelectedPrinceId] = useState(null); // New state for prince ID
-  const [selectedBarangay, setSelectedBarangay] = useState(null); // New state for barangay name
 
   // Filter princes based on search term
   const filteredPrinces = princes.filter((prince) =>
@@ -58,21 +59,22 @@ export default function Ablc() {
 
   const handlePrinceClick = async (prince_id, barangay, princeName) => {
     setSelectedPrinceId(prince_id);
-    setSelectedBarangay(barangay);
     setLoading(true);
-
     try {
       // Fetch the people data to filter generals based on the barangay and role
-      const response = await axios.get("http://localhost:3001/people/by-barangay", {
-        params: { barangay: barangayName },
-      }); 
+      const response = await axios.get(
+        "http://localhost:3001/people/by-barangay",
+        {
+          params: { barangay: selectedBarangay._id },
+        }
+      );
       const people = response.data;
 
       // Filter the generals based on barangay name and role ("general")
       const generalDetails = people
         .filter(
           (person) =>
-            person.barangay_name?.toLowerCase() === barangay.toLowerCase() &&
+            person.barangay_id === selectedBarangay._id &&
             person.role === "general"
         )
         .map((general) => ({
@@ -177,7 +179,7 @@ export default function Ablc() {
                     onClick={() =>
                       handlePrinceClick(
                         prince.prince_id,
-                        barangayName,
+                        selectedBarangay.barangay_name,
                         prince.name
                       )
                     }
