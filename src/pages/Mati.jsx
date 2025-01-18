@@ -80,8 +80,13 @@ export default function Mati() {
             };
           });
 
-        // Fetch all prince data from the prince collection
-        const princeResponse = await axios.get("http://localhost:3001/prince/");
+        // Fetch all prince data from the selected barangay
+        const princeResponse = await axios.get(
+          "http://localhost:3001/prince/",
+          {
+            params: { barangay: selectedBarangay._id },
+          }
+        );
         const princeData = princeResponse.data;
 
         // Filter and map to find generals for each prince
