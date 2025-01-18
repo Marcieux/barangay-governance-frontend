@@ -181,6 +181,8 @@ export default function Mati() {
             number: matchingGeneral?.number || "-",
             precinct: matchingGeneral?.precinct || "-",
             purok: general.purok || "-",
+            leader: general.leader || [],
+            leaderCount: (general.leader || []).length
           };
         });
 
