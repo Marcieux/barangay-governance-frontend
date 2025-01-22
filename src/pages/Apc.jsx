@@ -103,7 +103,7 @@ export default function Apc() {
       const selectedGeneral = generals.find(
         (general) => general.general_id === general_id
       );
-      console.log("Selected General", selectedGeneral);
+      
       // Navigate and pass the leaders with the details
       navigate(`/get-names/${barangay}/apc/${general_id}`, {
         state: {
