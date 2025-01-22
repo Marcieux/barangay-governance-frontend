@@ -57,7 +57,7 @@ export default function ReferralPage() {
     const filteredSuggestions = filteredPeople
       .filter(
         (person) =>
-          person.barangayId === selectedBarangay.id &&
+          person.barangay_id === selectedBarangay._id &&
           person._id !== selectedBarangay.king_id
       )
       .map((person) => ({
@@ -90,7 +90,7 @@ export default function ReferralPage() {
     const filteredSuggestions = filteredPeople
       .filter(
         (person) =>
-          person.barangayId === selectedBarangay.id && // Match second barangay
+          person.barangay_id === selectedBarangay._id && // Match second barangay
           person._id !== selectedBarangay.king_id // Exclude king
       )
       .map((person) => ({
