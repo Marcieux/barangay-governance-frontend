@@ -50,8 +50,7 @@ export default function King() {
     ) {
       try {
         await axios.put(`http://localhost:3001/people/${kingId}`, {
-          role: "king",
-          barangay_id: selectedBarangay._id
+          role: "king"
         });
 
         await axios.put(`http://localhost:3001/barangay/${selectedBarangay._id}`, {

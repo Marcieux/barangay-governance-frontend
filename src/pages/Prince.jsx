@@ -65,8 +65,7 @@ export default function Prince({ onSelectPrince = () => {} }) {
       ) {
         try {
           await axios.put(`http://localhost:3001/people/${princeId}`, {
-            role: "prince",
-            barangay_id: selectedBarangay._id,
+            role: "prince"
           });
 
           const response = await axios.post("http://localhost:3001/prince", {

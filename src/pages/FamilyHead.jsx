@@ -134,8 +134,7 @@ export default function FamilyHead() {
         )
       ) {
         await axios.put(`http://localhost:3001/people/${flId}`, {
-          role: "leader",
-          barangay_id: selectedBarangay._id,
+          role: "leader"
         });
 
         await axios.post("http://localhost:3001/leader", {

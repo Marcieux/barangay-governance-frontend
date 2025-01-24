@@ -111,8 +111,7 @@ export default function General() {
         )
       ) {
         await axios.put(`http://localhost:3001/people/${generalId}`, {
-          role: "general",
-          barangay_id: selectedBarangay._id,
+          role: "general"
         });
 
         await axios.post("http://localhost:3001/general", {
