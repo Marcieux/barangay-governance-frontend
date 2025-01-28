@@ -3,7 +3,6 @@ import BarangayDropdown from "../components/BarangayDropdown";
 import BarangayContext from "../contexts/BarangayContext";
 import { useFilteredPeople } from "../hooks/useBarangayData";
 import PeopleSearchBox from "../components/PeopleSearchBox";
-import PersonDetails from "../modals/PersonDetails";
 import axios from "axios";
 
 export default function SearchPerson() {
@@ -23,17 +22,13 @@ export default function SearchPerson() {
   const [uplineDetails, setUplineDetails] = useState([]);
   const [downlineDetails, setDownlineDetails] = useState([]);
 
-  // State for modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [clickedPerson, setClickedPerson] = useState(null);
-
   const handleBarangayChange = (barangay) => {
     setSelectedBarangay(barangay);
     // Clear all relevant state
-    setPeopleId(null); 
+    setPeopleId(null);
     setPeopleSearchText("");
-    setPeopleSuggestions([]); 
-    setSelectedPerson(""); 
+    setPeopleSuggestions([]);
+    setSelectedPerson("");
     setUpline(false);
     setDownline(false);
     setUplineDetails([]);
@@ -71,24 +66,33 @@ export default function SearchPerson() {
     setPeopleSuggestions(filteredSuggestions);
   };
 
+  // Add role-to-label mapping
+  const ROLE_LABELS = {
+    king: "Angat Chair",
+    prince: "BCO",
+    general: "PCL",
+    leader: "FL",
+  };
+
   const handlePeopleSelect = (person) => {
-    setSelectedPerson(person);
+    setSelectedPerson({
+      ...person,
+      roleLabel: ROLE_LABELS[person.role] || "Unknown", // Add roleLabel
+    });
     setPeopleId(person._id);
     setPeopleSearchText(person.name);
     setPeopleSuggestions([]);
   };
-  
-  // Handle clicking a person in upline or downline
-  const handlePersonClick = (person) => {
-    setClickedPerson(person);
-    setIsModalOpen(true);
-  };
 
-  
-  // Close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setClickedPerson(null);
+  const handlePersonClick = (person) => {
+    setSelectedPerson({
+      ...person,
+      // Preserve roleLabel if already exists, otherwise generate it
+      roleLabel: person.roleLabel || ROLE_LABELS[person.role] || "Unknown",
+    });
+    setPeopleId(person._id);
+    setPeopleSearchText(person.name);
+    setPeopleSuggestions([]);
   };
 
   // Toggle Upline visibility
@@ -132,7 +136,8 @@ export default function SearchPerson() {
           if (king) {
             uplineDetails.push({
               ...king,
-              role: "Angat Chair",
+              role: "king", // Keep the original role key
+              roleLabel: "Angat Chair", // Add a display label
             });
           }
         }
@@ -161,13 +166,15 @@ export default function SearchPerson() {
           if (king) {
             uplineDetails.push({
               ...king,
-              role: "Angat Chair",
+              role: "king",
+              roleLabel: "Angat Chair",
             });
           }
           if (prince) {
             uplineDetails.push({
               ...prince,
-              role: "ABLC",
+              role: "prince", // Original key
+              roleLabel: "BCO", // Display label
             });
           }
         }
@@ -190,7 +197,8 @@ export default function SearchPerson() {
           if (king) {
             uplineDetails.push({
               ...king,
-              role: "Angat Chair",
+              role: "king",
+              roleLabel: "Angat Chair",
             });
           }
 
@@ -215,7 +223,8 @@ export default function SearchPerson() {
             if (prince) {
               uplineDetails.push({
                 ...prince,
-                role: "ABLC",
+                role: "prince",
+                roleLabel: "BCO",
               });
             }
 
@@ -225,7 +234,8 @@ export default function SearchPerson() {
             if (general) {
               uplineDetails.push({
                 ...general,
-                role: "APC",
+                role: "general",
+                roleLabel: "PCL",
               });
             }
           }
@@ -268,7 +278,6 @@ export default function SearchPerson() {
     if (!selectedPerson) return [];
 
     try {
-      let downlineDetails = [];
       const { role, _id } = selectedPerson;
 
       // Determine the endpoint based on the selected person's role
@@ -283,7 +292,9 @@ export default function SearchPerson() {
 
       if (!endpoint) {
         // Leaders don't have downlines
-        return [{ name: "No downline available", role: "Unknown" }];
+        return {
+          NoDownline: [{ name: "No downline available", role: "Unknown" }],
+        };
       }
 
       const response = await axios.get(`http://localhost:3001/${endpoint}`, {
@@ -307,38 +318,46 @@ export default function SearchPerson() {
       );
 
       if (downlineData.length === 0) {
-        return [
-          {
-            name: `No downline found for the selected ${role}.`,
-            role: "Unknown",
-          },
-        ];
+        return {
+          NoDownline: [
+            {
+              name: `No downline found for the selected ${role}.`,
+              role: "Unknown",
+            },
+          ],
+        };
       }
 
-      // Format downline details with full details
-      downlineDetails = downlineData.map((person) => {
+      // Determine roleLabel based on the endpoint (downline type)
+      const roleLabel =
+        endpoint === "prince"
+          ? "BCO"
+          : endpoint === "general"
+          ? "PCL"
+          : endpoint === "leader"
+          ? "FL"
+          : "Unknown";
+
+      // Format downline details with role keys and labels
+      const downlineDetails = downlineData.map((person) => {
         const mergedPerson = peopleData.find(
           (p) => p._id === person[`${endpoint}_id`]
         );
 
         return {
-          ...mergedPerson, // Include full details from people collection
-          name: person[`${endpoint}_name`],
-          role:
-            role === "king"
-              ? "ABLC"
-              : role === "prince"
-              ? "APC"
-              : role === "general"
-              ? "FL"
-              : "Unknown",
+          ...mergedPerson,
+          role: endpoint, // Preserve original role key ("prince", "general", etc.)
+          roleLabel, // Add display label ("BCO", "PCL", etc.)
         };
       });
 
-      return downlineDetails;
+      // Group by role
+      return { [roleLabel]: downlineDetails };
     } catch (error) {
       console.error("Error fetching downline details:", error);
-      return [{ name: "Error fetching downline details.", role: "Unknown" }];
+      return {
+        Error: [{ name: "Error fetching downline details.", role: "Unknown" }],
+      };
     }
   }, [selectedPerson, selectedBarangay]);
 
@@ -400,7 +419,7 @@ export default function SearchPerson() {
             <tr>
               <td className="border p-2 font-bold w-1/5">ROLE: </td>
               <td className="border p-2 w-4/5 text-red-500 font-semibold uppercase">
-                {selectedPerson.role || "-"}
+                {selectedPerson.roleLabel || "-"}
               </td>
             </tr>
           </tbody>
@@ -422,11 +441,11 @@ export default function SearchPerson() {
                   {uplineDetails.map((uplinePerson, index) => (
                     <tr
                       key={index}
-                      onClick={() => handlePersonClick(uplinePerson)}
                       className="cursor-pointer hover:bg-gray-100"
+                      onClick={() => handlePersonClick(uplinePerson)}
                     >
                       <td className="border p-2 font-bold w-1/5 uppercase">
-                        {uplinePerson.role}:
+                        {uplinePerson.roleLabel}:
                       </td>
                       <td className="border p-2 w-4/5">{uplinePerson.name}</td>
                     </tr>
@@ -448,32 +467,28 @@ export default function SearchPerson() {
 
           {downline && selectedPerson && (
             <div className="mt-4">
-              <table className="w-full border-collapse text-sm">
-                <tbody>
-                  {downlineDetails.map((downlinePerson, index) => (
-                    <tr
-                      key={index}
-                      onClick={() => handlePersonClick(downlinePerson)}
-                      className="cursor-pointer hover:bg-gray-100"
-                    >
-                      <td className="border p-2 font-bold w-1/5 uppercase">
-                        {downlinePerson.role}:
-                      </td>
-                      <td className="border p-2 w-4/5">
-                        {downlinePerson.name}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {Object.entries(downlineDetails).map(([role, people], index) => (
+                <div key={index} className="mb-4">
+                  <h3 className="text-xl font-bold mb-5">{role}:</h3>
+                  <table className="w-full border-collapse text-sm">
+                    <tbody>
+                      {Array.isArray(people) &&
+                        people.map((person, idx) => (
+                          <tr
+                            key={idx}
+                            className="cursor-pointer hover:bg-gray-100"
+                            onClick={() => handlePersonClick(person)}
+                          >
+                            <td className="border p-2 w-full">{person.name}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
             </div>
           )}
         </div>
-
-        {/* MODAL */}
-        {isModalOpen && (
-          <PersonDetails person={clickedPerson} onClose={closeModal} />
-        )}
       </div>
     </div>
   );
