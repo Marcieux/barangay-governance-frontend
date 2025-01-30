@@ -25,6 +25,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Fl from "./pages/Fl";
 import ApcFl from "./pages/ApcFl";
 import SearchPerson from "./pages/SearchPerson";
+import MunicipalCounter from "./pages/MunicipalCounter";
+import BarangayCounter from "./pages/BarangayCounter";
 
 function App() {
   useEffect(() => {
@@ -60,6 +62,8 @@ function App() {
               <Route path="/encode-name/set-fh" element={<FamilyHead />} />
               <Route path="/encode-name/set-referral-page" element={<ReferralPage />} />
               <Route path="/encode-name/search" element={<SearchPerson />} />
+              <Route path="/counter" element={<MunicipalCounter />} />
+              <Route path="/counter/:municipality" element={<BarangayCounter />} />
             </Route>
 
             {/* Admin/Superadmin Routes */}
