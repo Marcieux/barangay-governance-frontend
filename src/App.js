@@ -61,7 +61,7 @@ function App() {
               <Route path="/encode-name/coastal" element={<Coastal />} />
               <Route path="/encode-name/set-fh" element={<FamilyHead />} />
               <Route path="/encode-name/set-referral-page" element={<ReferralPage />} />
-              <Route path="/encode-name/search" element={<SearchPerson />} />
+              <Route path="/search" element={<SearchPerson />} />
               <Route path="/counter" element={<MunicipalCounter />} />
               <Route path="/counter/:municipality" element={<BarangayCounter />} />
             </Route>
