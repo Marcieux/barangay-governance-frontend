@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -9,21 +9,15 @@ export default function Login() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // FOR FUTURE USE IF WE HAVE A LOG-OUT BUTTON IMPLEMENTATION
-  // // Check if user is already logged in
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   const role = localStorage.getItem("role");
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
-  //   // If there's a token and a role, navigate to the corresponding page
-  //   if (token && role) {
-  //     if (role === "encoder") {
-  //       navigate("/encode-name/set-general");
-  //     } else {
-  //       navigate("/get-names");
-  //     }
-  //   }
-  // }, [navigate]);
+    if (token && role) {
+      navigate(role === "encoder" ? "/encode-name/set-general" : "/get-names");
+    }
+  }, [navigate]); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();

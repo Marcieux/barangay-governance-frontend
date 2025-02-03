@@ -27,6 +27,7 @@ import ApcFl from "./pages/ApcFl";
 import SearchPerson from "./pages/SearchPerson";
 import MunicipalCounter from "./pages/MunicipalCounter";
 import BarangayCounter from "./pages/BarangayCounter";
+import Navigation from "./components/Navigation";
 
 function App() {
   useEffect(() => {
@@ -40,47 +41,50 @@ function App() {
 
   return (
     <BarangayProvider>
-      <main className="min-h-screen flex items-center justify-center bg-red-500">
-        <BrowserRouter>
-        <Routes>
-            {/* Public Route */}
-            <Route path="/login" element={<Login />} />
+      <BrowserRouter>
+        <div className="min-h-screen flex items-center justify-center bg-red-500">
+          <Navigation />
+          <main className="pt-20 pb-8 px-4 sm:px-6 lg:px-8"> {/* Added padding for nav */}
+            <Routes>
+              {/* Public Route */}
+              <Route path="/login" element={<Login />} />
 
-            {/* Encoder Routes */}
-            <Route element={<ProtectedRoute allowedRoles={["encoder", "superadmin", "admin"]} />}>
-              <Route path="/encode-name/king" element={<King />} />
-              <Route path="/encode-name/set-prince" element={<Prince />} />
-              <Route path="/encode-name/set-general" element={<General />} />
-              <Route path="/encode-name/set-cafgu" element={<Cafgu />} />
-              <Route path="/encode-name/set-purok-chair" element={<PurokChair />} />
-              <Route path="/encode-name/set-tagapamayapa" element={<TagaPamayapa />} />
-              <Route path="/encode-name/bhw" element={<Bhw />} />
-              <Route path="/encode-name/tanod" element={<Tanod />} />
-              <Route path="/encode-name/public-safety" element={<PublicSafety />} />
-              <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
-              <Route path="/encode-name/coastal" element={<Coastal />} />
-              <Route path="/encode-name/set-fh" element={<FamilyHead />} />
-              <Route path="/encode-name/set-referral-page" element={<ReferralPage />} />
-              <Route path="/search" element={<SearchPerson />} />
-              <Route path="/counter" element={<MunicipalCounter />} />
-              <Route path="/counter/:municipality" element={<BarangayCounter />} />
-            </Route>
+              {/* Encoder Routes */}
+              <Route element={<ProtectedRoute allowedRoles={["encoder", "superadmin", "admin"]} />}>
+                <Route path="/encode-name/king" element={<King />} />
+                <Route path="/encode-name/set-prince" element={<Prince />} />
+                <Route path="/encode-name/set-general" element={<General />} />
+                <Route path="/encode-name/set-cafgu" element={<Cafgu />} />
+                <Route path="/encode-name/set-purok-chair" element={<PurokChair />} />
+                <Route path="/encode-name/set-tagapamayapa" element={<TagaPamayapa />} />
+                <Route path="/encode-name/bhw" element={<Bhw />} />
+                <Route path="/encode-name/tanod" element={<Tanod />} />
+                <Route path="/encode-name/public-safety" element={<PublicSafety />} />
+                <Route path="/encode-name/bantay-dagat" element={<BantayDagat />} />
+                <Route path="/encode-name/coastal" element={<Coastal />} />
+                <Route path="/encode-name/set-fh" element={<FamilyHead />} />
+                <Route path="/encode-name/set-referral-page" element={<ReferralPage />} />
+                <Route path="/search" element={<SearchPerson />} />
+                <Route path="/counter" element={<MunicipalCounter />} />
+                <Route path="/counter/:municipality" element={<BarangayCounter />} />
+              </Route>
 
-            {/* Admin/Superadmin Routes */}
-            <Route element={<ProtectedRoute allowedRoles={["superadmin", "admin"]} />}>
-              <Route path="/get-names" element={<Mati />} />
-              <Route path="/get-names/:barangay/ablc" element={<Ablc />} />
-              <Route path="/get-names/:barangay/ablc/:id" element={<AblcApc />} />
-              <Route path="/get-names/:barangay/apc/" element={<Apc />} />
-              <Route path="/get-names/:barangay/apc/:id" element={<ApcFl />} />
-              <Route path="/get-names/:barangay/fl/" element={<Fl />} />
-            </Route>
+              {/* Admin/Superadmin Routes */}
+              <Route element={<ProtectedRoute allowedRoles={["superadmin", "admin"]} />}>
+                <Route path="/get-names" element={<Mati />} />
+                <Route path="/get-names/:barangay/ablc" element={<Ablc />} />
+                <Route path="/get-names/:barangay/ablc/:id" element={<AblcApc />} />
+                <Route path="/get-names/:barangay/apc/" element={<Apc />} />
+                <Route path="/get-names/:barangay/apc/:id" element={<ApcFl />} />
+                <Route path="/get-names/:barangay/fl/" element={<Fl />} />
+              </Route>
 
-            {/* Fallback Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </main>
+              {/* Fallback Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+        </div>
+      </BrowserRouter>
     </BarangayProvider>
   );
 }
