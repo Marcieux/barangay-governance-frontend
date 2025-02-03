@@ -94,8 +94,8 @@ export default function BarangayCounter() {
     return <p className="text-center p-4 text-red-500">Error: {error}</p>;
 
   return (
-    <div className="bg-white rounded-xl my-10 shadow-lg w-[1280px] p-6">
-      <div className="flex justify-center items-center mb-8 flex-wrap gap-4">
+    <div className="bg-white rounded-xl my-10 shadow-lg max-w-7xl p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold uppercase text-red-600">
           {municipality.toUpperCase()} Barangays
         </h1>
