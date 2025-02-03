@@ -24,14 +24,16 @@ export default function MunicipalCounter() {
           axios.get("http://localhost:3001/barangay/targets-by-municipality"),
         ]);
 
-        // Merge data using the dynamic municipalities list
-        const mergedData = municipalitiesList.map((name) => ({
-          name,
-          peopleWithRoles:
-            peopleRes.data.find((d) => d._id === name)?.peopleWithRoles || 0,
-          target: targetsRes.data.find((d) => d._id === name)?.totalTarget || 0,
-        }));
-
+        // Merge data
+        const mergedData = municipalitiesList.map((name) => {
+          const municipalityData = peopleRes.data.find((d) => d._id === name);
+          return {
+            name,
+            peopleWithRoles: municipalityData?.peopleWithRoles || 0,
+            totalPeople: municipalityData?.totalPeople || 0,
+            target: targetsRes.data.find((d) => d._id === name)?.totalTarget || 0,
+          };
+        });
         setMunicipalities(mergedData);
       } catch (err) {
         setError(err.message);
@@ -127,7 +129,10 @@ export default function MunicipalCounter() {
               {/* Municipality Info */}
               <div className="mt-4 text-center">
                 <h3 className="text-sm sm:text-base font-semibold text-red-600 mb-1">
-                  {municipality.name}
+                  {municipality.name}{" "}
+                  <span className="text-red-500 text-xs">
+                    (RV: {municipality.totalPeople})
+                  </span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600">
                   <span className="text-red-600 font-medium">
