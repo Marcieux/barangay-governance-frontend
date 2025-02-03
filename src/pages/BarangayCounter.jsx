@@ -8,6 +8,12 @@ export default function BarangayCounter() {
   const [barangays, setBarangays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalCounts, setTotalCounts] = useState({
+    ablc: 0,
+    apc: 0,
+    fl: 0,
+    fm: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +28,19 @@ export default function BarangayCounter() {
             axios.get("http://localhost:3001/general"),
             axios.get("http://localhost:3001/leader"),
           ]);
+
+        // Get all barangay IDs in the municipality
+        const barangayIds = barangaysRes.data.map((b) => b._id);
+        // Calculate totals
+        const calculateTotal = (data) =>
+          data.filter((item) => barangayIds.includes(item.barangay_id)).length;
+
+        setTotalCounts({
+          ablc: calculateTotal(princesRes.data),
+          apc: calculateTotal(generalsRes.data),
+          fl: calculateTotal(leadersRes.data.data),
+          fm: 0, // Placeholder as per requirements
+        });
 
         // Map through barangays and count roles
         const mergedData = barangaysRes.data.map((barangay) => {
@@ -76,9 +95,39 @@ export default function BarangayCounter() {
 
   return (
     <div className="bg-white rounded-xl my-10 shadow-lg w-[1280px] p-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center uppercase text-red-600 mb-8">
-        {municipality.toUpperCase()} Barangays
-      </h1>
+      <div className="flex justify-center space-x-10 items-center mb-8 flex-wrap gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold uppercase text-red-600">
+          {municipality.toUpperCase()} Barangays
+        </h1>
+
+        {/* Total Counts Container */}
+        <div className="flex gap-4 sm:gap-6 flex-wrap">
+          <div className="bg-red-50 p-3 rounded-lg">
+            <div className="text-xs sm:text-sm text-gray-600">ABLC</div>
+            <div className="text-lg sm:text-xl font-bold text-red-600">
+              {totalCounts.ablc}
+            </div>
+          </div>
+          <div className="bg-red-50 p-3 rounded-lg">
+            <div className="text-xs sm:text-sm text-gray-600">APC</div>
+            <div className="text-lg sm:text-xl font-bold text-red-600">
+              {totalCounts.apc}
+            </div>
+          </div>
+          <div className="bg-red-50 p-3 rounded-lg">
+            <div className="text-xs sm:text-sm text-gray-600">FL</div>
+            <div className="text-lg sm:text-xl font-bold text-red-600">
+              {totalCounts.fl}
+            </div>
+          </div>
+          <div className="bg-red-50 p-3 rounded-lg">
+            <div className="text-xs sm:text-sm text-gray-600">FM</div>
+            <div className="text-lg sm:text-xl font-bold text-red-600">
+              {totalCounts.fm}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
         {barangays.map((barangay, index) => {
@@ -102,7 +151,10 @@ export default function BarangayCounter() {
                 {/* Barangay Info */}
                 <div className="mt-4 text-center">
                   <h3 className="text-sm sm:text-base font-semibold text-red-600 mb-1 truncate w-full">
-                    {barangay.barangay_name}
+                    {barangay.barangay_name}{" "}
+                    <span className="text-red-500 text-xs">
+                      (RV: {barangay.totalPeople})
+                    </span>
                   </h3>
                 </div>
 
