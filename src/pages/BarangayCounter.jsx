@@ -150,12 +150,12 @@ export default function BarangayCounter() {
               <div>
                 {/* Barangay Info */}
                 <div className="mt-4 text-center">
-                  <h3 className="text-sm sm:text-base font-semibold text-red-600 mb-1 truncate w-full">
-                    {barangay.barangay_name}{" "}
-                    <span className="text-red-500 text-xs">
-                      (RV: {barangay.totalPeople})
-                    </span>
+                  <h3 className="text-sm sm:text-base font-semibold text-red-600 truncate w-full">
+                    {barangay.barangay_name}
                   </h3>
+                  <span className="text-red-500 font-semibold text-xs">
+                    (RV: {barangay.totalPeople})
+                  </span>
                 </div>
 
                 {/* Progress Circle */}
