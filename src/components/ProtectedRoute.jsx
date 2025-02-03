@@ -22,7 +22,17 @@ export default function ProtectedRoute({ allowedRoles }) {
 
   // If the user doesn't have access, show the modal
   if (showModal) {
-    return <AccessDeniedModal onClose={() => setRedirectToLogin(true)} />;
+    return (
+      <AccessDeniedModal 
+        onClose={() => {
+          setRedirectToLogin(true); // Set redirect to login after modal is closed
+          // Redirect encoder to the encode-name route or similar allowed route
+          if (role === 'encoder') {
+            setRedirectToLogin(true); // Redirect to encoder's allowed route, for example: /encode-name/set-general
+          }
+        }} 
+      />
+    );
   }
 
   // Render child components if the user has access
