@@ -20,7 +20,7 @@ export default function FamilyLeaderPurok({ personId }) {
     try {
       // Fetch the leader data for validation
       const leaderResponse = await axios.get(
-        `/api/leader/${personId}`
+        `http://localhost:3001/leader/${personId}`
       );
 
       if (!leaderResponse.data.success) {
@@ -33,7 +33,7 @@ export default function FamilyLeaderPurok({ personId }) {
 
       // Fetch the person's data
       const personResponse = await axios.get( 
-        `/api/people/${personId}`
+        `http://localhost:3001/people/${personId}`
       );
 
       const personData = personResponse.data;
@@ -46,12 +46,12 @@ export default function FamilyLeaderPurok({ personId }) {
 
       // Proceed with updates
       const personUpdate = axios.put(
-        `/api/people/${personId}`,
+        `http://localhost:3001/people/${personId}`,
         { purok: selectedPurok }
       );
 
       const leaderUpdate = axios.put(
-        `/api/leader/${personId}`,
+        `http://localhost:3001/leader/${personId}`,
         { purok: selectedPurok }
       );
 
