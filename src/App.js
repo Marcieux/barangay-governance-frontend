@@ -28,6 +28,7 @@ import SearchPerson from "./pages/SearchPerson";
 import MunicipalCounter from "./pages/MunicipalCounter";
 import BarangayCounter from "./pages/BarangayCounter";
 import Navigation from "./components/Navigation";
+import FamilyGroup from "./pages/FamilyGroup";
 
 function App() {
   useEffect(() => {
@@ -64,6 +65,7 @@ function App() {
                 <Route path="/encode-name/coastal" element={<Coastal />} />
                 <Route path="/encode-name/set-fh" element={<FamilyHead />} />
                 <Route path="/encode-name/set-referral-page" element={<ReferralPage />} />
+                <Route path="/encode-name/set-fg" element={<FamilyGroup />} />
                 <Route path="/search" element={<SearchPerson />} />
                 <Route path="/counter" element={<MunicipalCounter />} />
                 <Route path="/counter/:municipality" element={<BarangayCounter />} />
