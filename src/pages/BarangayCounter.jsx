@@ -19,7 +19,7 @@ export default function BarangayCounter() {
     const fetchData = async () => {
       try {
         // Fetch all required data in parallel
-        const [barangaysRes, princesRes, generalsRes, leadersRes] =
+        const [barangaysRes, princesRes, generalsRes, leadersRes, memberRes] =
           await Promise.all([
             axios.get(
               `http://localhost:3001/barangay/by-municipality/${municipality}`
@@ -27,6 +27,7 @@ export default function BarangayCounter() {
             axios.get("http://localhost:3001/prince"),
             axios.get("http://localhost:3001/general"),
             axios.get("http://localhost:3001/leader"),
+            axios.get("http://localhost:3001/member"),
           ]);
 
         // Get all barangay IDs in the municipality
@@ -39,7 +40,7 @@ export default function BarangayCounter() {
           ablc: calculateTotal(princesRes.data),
           apc: calculateTotal(generalsRes.data),
           fl: calculateTotal(leadersRes.data.data),
-          fm: 0, // Placeholder as per requirements
+          fm: calculateTotal(memberRes.data.data),
         });
 
         // Map through barangays and count roles
@@ -59,6 +60,11 @@ export default function BarangayCounter() {
             (leader) => leader.barangay_id === barangay._id
           ).length;
 
+          // Count FM (Members) for this barangay
+          const fmCount = memberRes.data.data.filter(
+            (member) => member.barangay_id === barangay._id
+          ).length;
+
           // Calculate total roles
           const totalRoles = ablcCount + apcCount + flCount;
 
@@ -67,7 +73,7 @@ export default function BarangayCounter() {
             ablcCount,
             apcCount,
             flCount,
-            fmCount: 0, // Placeholder as per requirements
+            fmCount,
             totalRoles,
           };
         });
