@@ -101,7 +101,7 @@ export default function ApcFl() {
                     {leader.precinct}
                   </td>
                   <td className="border border-gray-300 p-2">{leader.purok}</td>
-                  <td className="border border-gray-300 p-2">-</td>
+                  <td className="border border-gray-300 p-2">{leader.memberCount}</td>
                   <td className="border border-gray-300 p-2">-</td>
                   <td className="border border-gray-300 p-2">-</td>
                 </tr>

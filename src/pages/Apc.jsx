@@ -96,6 +96,8 @@ export default function Apc() {
             number: matchingLeader?.number || "-",
             precinct: matchingLeader?.precinct || "-",
             purok: leader.purok || "-",
+            member: leader.member || [],
+            memberCount: (leader.member || []).length
           };
         });
 
