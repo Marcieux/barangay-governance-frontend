@@ -68,9 +68,6 @@ function App() {
                 <Route path="/encode-name/set-fh" element={<FamilyHead />} />
                 <Route path="/encode-name/set-referral-page" element={<ReferralPage />} />
                 <Route path="/encode-name/set-fg" element={<FamilyGroup />} />
-                <Route path="/search" element={<SearchPerson />} />
-                <Route path="/counter" element={<MunicipalCounter />} />
-                <Route path="/counter/:municipality" element={<BarangayCounter />} />
               </Route>
 
               {/* Admin/Superadmin Routes */}
@@ -83,6 +80,9 @@ function App() {
                 <Route path="/get-names/:barangay/fl/" element={<Fl />} />
                 <Route path="/get-names/:barangay/fl/:id" element={<FlFm />} />
                 <Route path="/get-names/:barangay/fm/" element={<Fm />} />
+                <Route path="/search" element={<SearchPerson />} />
+                <Route path="/counter" element={<MunicipalCounter />} />
+                <Route path="/counter/:municipality" element={<BarangayCounter />} />
               </Route>
 
               {/* Fallback Route */}
