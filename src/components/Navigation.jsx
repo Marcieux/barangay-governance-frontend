@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 export default function Navigation() {
   const [showNav, setShowNav] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [showEncoderDropdown, setShowEncoderDropdown] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -74,6 +75,48 @@ export default function Navigation() {
             >
               Get Names
             </NavLink>
+
+            {/* Encoder Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setShowEncoderDropdown(true)}
+              onMouseLeave={() => setShowEncoderDropdown(false)}
+            >
+              <button
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-red-100 transition"
+              >
+                Encode Names <i className="fa-solid fa-caret-down ml-2"></i>
+              </button>
+              {showEncoderDropdown && (
+                <div className="absolute left-0 w-48 bg-white shadow-lg rounded-md py-2">
+                  {[
+                    { path: "/encode-name/king", label: "King" },
+                    { path: "/encode-name/set-prince", label: "Prince" },
+                    { path: "/encode-name/set-general", label: "General" },
+                    { path: "/encode-name/set-fh", label: "Family Head" },
+                    { path: "/encode-name/set-fg", label: "Family Group" },
+                    { path: "/encode-name/set-referral-page", label: "Referral Page" },
+                    { path: "/encode-name/bantay-dagat", label: "Bantay Dagat" },
+                    { path: "/encode-name/bhw", label: "Bhw" },
+                    { path: "/encode-name/set-cafgu", label: "Cafgu" },
+                    { path: "/encode-name/coastal", label: "Coastal" },
+                    { path: "/encode-name/public-safety", label: "Public Safety" },
+                    { path: "/encode-name/set-purok-chair", label: "Purok Chair" },
+                    { path: "/encode-name/set-tagapamayapa", label: "TagaPamayapa" },
+                    { path: "/encode-name/tanod", label: "Tanod" },
+                  ].map(({ path, label }) => (
+                    <NavLink
+                      key={path}
+                      to={path}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100"
+                      onClick={() => setShowEncoderDropdown(false)}
+                    >
+                      {label}
+                    </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Logout Button */}
