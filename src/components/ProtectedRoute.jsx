@@ -12,6 +12,8 @@ export default function ProtectedRoute({ allowedRoles }) {
   useEffect(() => {
     if (token && !allowedRoles.includes(role)) {
       setShowModal(true);
+    } else {
+      setShowModal(false);
     }
   }, [token, role, allowedRoles]);
 
