@@ -29,6 +29,8 @@ import MunicipalCounter from "./pages/MunicipalCounter";
 import BarangayCounter from "./pages/BarangayCounter";
 import Navigation from "./components/Navigation";
 import FamilyGroup from "./pages/FamilyGroup";
+import Fm from "./pages/Fm";
+import FlFm from "./pages/FlFm";
 
 function App() {
   useEffect(() => {
@@ -79,6 +81,8 @@ function App() {
                 <Route path="/get-names/:barangay/apc/" element={<Apc />} />
                 <Route path="/get-names/:barangay/apc/:id" element={<ApcFl />} />
                 <Route path="/get-names/:barangay/fl/" element={<Fl />} />
+                <Route path="/get-names/:barangay/fl/:id" element={<FlFm />} />
+                <Route path="/get-names/:barangay/fm/" element={<Fm />} />
               </Route>
 
               {/* Fallback Route */}

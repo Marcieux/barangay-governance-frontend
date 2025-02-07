@@ -12,6 +12,7 @@ export default function Mati() {
   const [princeCount, setPrinceCount] = useState(0);
   const [generalCount, setGeneralCount] = useState(0);
   const [leaderCount, setLeaderCount] = useState(0);
+  const [memberCount, setMemberCount] = useState(0);
   const [isBarangaySelected, setIsBarangaySelected] = useState(false); // Tracks if a barangay is selected
   const [loading, setLoading] = useState(false); // Loading state for fetch calls
   const navigate = useNavigate();
@@ -22,25 +23,31 @@ export default function Mati() {
       const fetchData = async () => {
         setLoading(true);
         try {
-          const [princesRes, generalsRes, leaderRes] = await Promise.all([
-            axios.get("http://localhost:3001/prince/stats/count", {
-              params: { barangay: selectedBarangay._id },
-            }),
-            axios.get("http://localhost:3001/general/stats/count", {
-              params: { barangay: selectedBarangay._id },
-            }),
-            axios.get("http://localhost:3001/leader/stats/count", {
-              params: { barangay: selectedBarangay._id },
-            }),
-          ]);
+          const [princesRes, generalsRes, leaderRes, memberRes] =
+            await Promise.all([
+              axios.get("http://localhost:3001/prince/stats/count", {
+                params: { barangay: selectedBarangay._id },
+              }),
+              axios.get("http://localhost:3001/general/stats/count", {
+                params: { barangay: selectedBarangay._id },
+              }),
+              axios.get("http://localhost:3001/leader/stats/count", {
+                params: { barangay: selectedBarangay._id },
+              }),
+              axios.get("http://localhost:3001/member/stats/count", {
+                params: { barangay: selectedBarangay._id },
+              }),
+            ]);
           setPrinceCount(princesRes.data.count || 0);
           setGeneralCount(generalsRes.data.count || 0);
           setLeaderCount(leaderRes.data.count || 0);
+          setMemberCount(memberRes.data.count || 0);
         } catch (error) {
           console.error("Error fetching data:", error);
           setPrinceCount(0);
           setGeneralCount(0);
           setLeaderCount(0);
+          setMemberCount(0);
         } finally {
           setLoading(false);
         }
@@ -258,6 +265,8 @@ export default function Mati() {
             number: matchingLeader?.number || "-",
             precinct: matchingLeader?.precinct || "-",
             purok: leader.purok || "-",
+            member: leader.member || [],
+            memberCount: (leader.member || []).length
           };
         });
 
@@ -271,6 +280,81 @@ export default function Mati() {
         });
       } catch (error) {
         console.error("Error fetching FLs:", error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.warn("No barangay name selected.");
+    }
+  };
+
+  const handleFMClick = async () => {
+    if (selectedBarangay) {
+      setLoading(true);
+
+      try {
+        // Fetch the people data to filter members based on the barangay and role
+        const peopleResponse = await axios.get(
+          "http://localhost:3001/people/by-barangay",
+          {
+            params: { barangay: selectedBarangay._id },
+          }
+        );
+        const people = peopleResponse.data;
+
+        // Filter members from the people collection
+        const memberDetails = people
+          .filter(
+            (person) =>
+              person.barangay_id === selectedBarangay._id &&
+              person.role === "member"
+          )
+          .map((member) => ({
+            name: member.name,
+            number: member.number,
+            precinct: member.precinct,
+            member_id: member._id,
+          }));
+
+        // Fetch the member data for the selected barangay
+        const memberResponse = await axios.get("http://localhost:3001/member", {
+          params: { barangay: selectedBarangay._id },
+        });
+
+        const memberData = memberResponse.data.data;
+
+        // Filter memberData to match the selected barangay
+        const filteredMemberData = memberData.filter(
+          (member) => member.barangay_id === selectedBarangay._id
+        );
+
+        // Merge member data with their details from the people collection
+        const mappedMembers = filteredMemberData.map((member) => {
+          const matchingMember = memberDetails.find(
+            (person) => person.member_id === member.member_id
+          );
+
+          return {
+            member_id: member.member_id,
+            member_name: member.member_name,
+            leader_id: member.leader_id,
+            leader_name: member.leader_name,
+            number: matchingMember?.number || "-",
+            precinct: matchingMember?.precinct || "-",
+            purok: member.purok || "-",
+          };
+        });
+
+        // Navigate to AngatKa page with the relevant data
+        navigate(`/get-names/${selectedBarangay.barangay_name}/fm`, {
+          state: {
+            barangayName: selectedBarangay.barangay_name,
+            kingName: selectedBarangay.king_name,
+            members: mappedMembers,
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching FMs:", error);
       } finally {
         setLoading(false);
       }
@@ -348,6 +432,15 @@ export default function Mati() {
                       FL:
                     </td>
                     <td className="border p-2">{leaderCount}</td>
+                  </tr>
+                  <tr>
+                    <td
+                      className="border p-2 font-bold cursor-pointer"
+                      onClick={handleFMClick}
+                    >
+                      FM:
+                    </td>
+                    <td className="border p-2">{memberCount}</td>
                   </tr>
                 </tbody>
               </table>
