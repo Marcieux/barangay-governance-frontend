@@ -3,34 +3,34 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BarangayProvider } from "./contexts/BarangayContext";
 import axios from "axios";
 import Login from "./pages/Login";
-import King from "./pages/King";
-import Prince from "./pages/Prince";
-import General from "./pages/General";
-import Cafgu from "./pages/Cafgu";
-import PurokChair from "./pages/PurokChair";
-import TagaPamayapa from "./pages/TagaPamayapa";
-import Bhw from "./pages/Bhw";
-import Tanod from "./pages/Tanod";
-import PublicSafety from "./pages/PublicSafety";
-import BantayDagat from "./pages/BantayDagat";
-import Coastal from "./pages/Coastal";
-import Mati from "./pages/Mati";
-import Ablc from "./pages/Ablc";
-import AblcApc from "./pages/AblcApc";
-import Apc from "./pages/Apc";
-import FamilyHead from "./pages/FamilyHead";
-import ReferralPage from "./pages/ReferralPage";
+import AngatChair from "./pages/encode-names/AngatChair";
+import Bco from "./pages/encode-names/Bco";
+import Pcs from "./pages/encode-names/Pcs";
+import Cafgu from "./pages/encode-names/Cafgu";
+import PurokChair from "./pages/encode-names/PurokChair";
+import TagaPamayapa from "./pages/encode-names/TagaPamayapa";
+import Bhw from "./pages/encode-names/Bhw";
+import Tanod from "./pages/encode-names/Tanod";
+import PublicSafety from "./pages/encode-names/PublicSafety";
+import BantayDagat from "./pages/encode-names/BantayDagat";
+import Coastal from "./pages/encode-names/Coastal";
+import GetNames from "./pages/get-names/GetNames";
+import BcoList from "./pages/get-names/BcoList";
+import BcoPcsList from "./pages/get-names/BcoPcsList";
+import PcsList from "./pages/get-names/PcsList";
+import FamilyHead from "./pages/encode-names/FamilyHead";
+import ReferralPage from "./pages/encode-names/ReferralPage";
 import NotFound from "./modals/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Fl from "./pages/Fl";
-import ApcFl from "./pages/ApcFl";
-import SearchPerson from "./pages/SearchPerson";
-import MunicipalCounter from "./pages/MunicipalCounter";
-import BarangayCounter from "./pages/BarangayCounter";
+import PclList from "./pages/get-names/PclList";
+import PcsPclList from "./pages/get-names/PcsPclList";
+import SearchPerson from "./pages/search-person/SearchPerson";
+import MunicipalCounter from "./pages/counter/MunicipalCounter";
+import BarangayCounter from "./pages/counter/BarangayCounter";
 import Navigation from "./components/Navigation";
-import FamilyGroup from "./pages/FamilyGroup";
-import Fm from "./pages/Fm";
-import FlFm from "./pages/FlFm";
+import FamilyGroup from "./pages/encode-names/FamilyGroup";
+import FmList from "./pages/get-names/FmList";
+import PclFmList from "./pages/get-names/PclFmList";
 
 function App() {
   useEffect(() => {
@@ -54,9 +54,9 @@ function App() {
 
               {/* Encoder Routes */}
               <Route element={<ProtectedRoute allowedRoles={["encoder", "superadmin", "admin"]} />}>
-                <Route path="/encode-name/king" element={<King />} />
-                <Route path="/encode-name/set-prince" element={<Prince />} />
-                <Route path="/encode-name/set-general" element={<General />} />
+                <Route path="/encode-name/angat-chair" element={<AngatChair />} />
+                <Route path="/encode-name/set-bco" element={<Bco />} />
+                <Route path="/encode-name/set-pcs" element={<Pcs />} />
                 <Route path="/encode-name/set-cafgu" element={<Cafgu />} />
                 <Route path="/encode-name/set-purok-chair" element={<PurokChair />} />
                 <Route path="/encode-name/set-tagapamayapa" element={<TagaPamayapa />} />
@@ -72,14 +72,14 @@ function App() {
 
               {/* Admin/Superadmin Routes */}
               <Route element={<ProtectedRoute allowedRoles={["superadmin", "admin"]} />}>
-                <Route path="/get-names" element={<Mati />} />
-                <Route path="/get-names/:barangay/ablc" element={<Ablc />} />
-                <Route path="/get-names/:barangay/ablc/:id" element={<AblcApc />} />
-                <Route path="/get-names/:barangay/apc/" element={<Apc />} />
-                <Route path="/get-names/:barangay/apc/:id" element={<ApcFl />} />
-                <Route path="/get-names/:barangay/fl/" element={<Fl />} />
-                <Route path="/get-names/:barangay/fl/:id" element={<FlFm />} />
-                <Route path="/get-names/:barangay/fm/" element={<Fm />} />
+                <Route path="/get-names" element={<GetNames />} />
+                <Route path="/get-names/:barangay/bco" element={<BcoList />} />
+                <Route path="/get-names/:barangay/bco/:id" element={<BcoPcsList />} />
+                <Route path="/get-names/:barangay/pcs/" element={<PcsList />} />
+                <Route path="/get-names/:barangay/pcs/:id" element={<PcsPclList />} />
+                <Route path="/get-names/:barangay/pcl/" element={<PclList />} />
+                <Route path="/get-names/:barangay/pcl/:id" element={<PclFmList />} />
+                <Route path="/get-names/:barangay/fm/" element={<FmList />} />
                 <Route path="/search" element={<SearchPerson />} />
                 <Route path="/counter" element={<MunicipalCounter />} />
                 <Route path="/counter/:municipality" element={<BarangayCounter />} />

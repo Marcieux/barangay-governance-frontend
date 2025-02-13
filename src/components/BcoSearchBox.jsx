@@ -1,23 +1,23 @@
 import React from "react";
 
-export default function TagapamayapaSearchBox(props) {
+export default function BcoSearchBox(props) {
   const {
     searchText,
     handleSearchChange,
     suggestions,
     handlePersonSelect,
-    handleAddTagapamayapa,
+    handleAddBco
   } = props;
-
+  
   return (
     <div>
       <label className="block mb-2 text-sm font-medium text-red-500">
-        Tagapamayapa
+        BCO
       </label>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between gap-5">
           <input
-            placeholder="Search Tagapamayapa"
+            placeholder="Search BCO"
             className="w-full p-2 border border-red-500 rounded outline-none text-sm"
             type="text"
             value={searchText}
@@ -25,7 +25,7 @@ export default function TagapamayapaSearchBox(props) {
           />
           <button
             className="px-4 py-2 font-semibold rounded text-sm text-red-500"
-            onClick={handleAddTagapamayapa}
+            onClick={handleAddBco}
           >
             Add
           </button>

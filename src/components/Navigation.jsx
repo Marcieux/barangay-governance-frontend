@@ -90,19 +90,19 @@ export default function Navigation() {
               {showEncoderDropdown && (
                 <div className="absolute left-0 w-48 bg-white shadow-lg rounded-md py-2">
                   {[
-                    { path: "/encode-name/king", label: "King" },
-                    { path: "/encode-name/set-prince", label: "Prince" },
-                    { path: "/encode-name/set-general", label: "General" },
+                    { path: "/encode-name/angat-chair", label: "Angat Chair" },
+                    { path: "/encode-name/set-bco", label: "BCO" },
+                    { path: "/encode-name/set-pcs", label: "PCS" },
                     { path: "/encode-name/set-fh", label: "Family Head" },
                     { path: "/encode-name/set-fg", label: "Family Group" },
                     { path: "/encode-name/set-referral-page", label: "Referral Page" },
                     { path: "/encode-name/bantay-dagat", label: "Bantay Dagat" },
-                    { path: "/encode-name/bhw", label: "Bhw" },
+                    { path: "/encode-name/bhw", label: "BHW" },
                     { path: "/encode-name/set-cafgu", label: "Cafgu" },
                     { path: "/encode-name/coastal", label: "Coastal" },
                     { path: "/encode-name/public-safety", label: "Public Safety" },
                     { path: "/encode-name/set-purok-chair", label: "Purok Chair" },
-                    { path: "/encode-name/set-tagapamayapa", label: "TagaPamayapa" },
+                    { path: "/encode-name/set-tagapamayapa", label: "Taga Pamayapa" },
                     { path: "/encode-name/tanod", label: "Tanod" },
                   ].map(({ path, label }) => (
                     <NavLink
