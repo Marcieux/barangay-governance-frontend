@@ -20,6 +20,15 @@ export default function FamilyGroup() {
   const [acId, setAcId] = useState(null);
   const [acName, setAcName] = useState("");
 
+    
+  // Track bco data
+  const [bcoId, setBcoId] = useState(null);
+  const [bcoName, setBcoName] = useState("");
+
+  // Track pcs data
+  const [pcsId, setPcsId] = useState(null);
+  const [pcsName, setPcsName] = useState("");
+
   // Track pcl data
   const [pclId, setPclId] = useState(null);
   const [pclName, setPclName] = useState("");
@@ -94,11 +103,25 @@ export default function FamilyGroup() {
     setFilteredPcl(filtered);
   };
 
-  const handlePclSelect = (person) => {
+  const handlePclSelect = async (person) => {
     setPclId(person._id);
     setPclName(person.name);
     setPclSearchText(person.name);
     setFilteredPcl([]);
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/leader/${person._id}`
+      );
+      const pclData = response.data.data;
+
+      setBcoId(pclData.prince_id);
+      setBcoName(pclData.prince_name);
+      setPcsId(pclData.general_id);
+      setPcsName(pclData.general_name);
+    } catch (error) {
+      console.error("Error fetching PCL data:", error);
+    }
   };
 
   const handleAddFm = async () => {
@@ -145,6 +168,10 @@ export default function FamilyGroup() {
           barangay_id: selectedBarangay._id,
           king_id: acId,
           king_name: acName,
+          prince_id: bcoId,
+          prince_name: bcoName,
+          general_id: pcsId,
+          general_name: pcsName,
           leader_id: pclId,
           leader_name: pclName,
         });
