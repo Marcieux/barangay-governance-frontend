@@ -75,7 +75,7 @@ export default function PclPurok({ personId }) {
         PCL's Purok
       </label>
 
-      <div className="pclex justify-between">
+      <div className="flex justify-between">
         <PurokSearchBox
           purokList={selectedBarangay?.purok_list || []}
           setSelectedPurok={setSelectedPurok}
