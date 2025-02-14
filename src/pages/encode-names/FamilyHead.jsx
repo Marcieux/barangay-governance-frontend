@@ -24,6 +24,10 @@ export default function FamilyHead() {
   const [pcsId, setPcsId] = useState(null);
   const [pcsName, setPcsName] = useState("");
 
+  // Track bco data
+  const [bcoId, setBcoId] = useState(null);
+  const [bcoName, setBcoName] = useState("");
+
   useEffect(() => {
     const selectedBarangayData = barangays.find(
       (b) => b.barangay_name === selectedBarangay.barangay_name
@@ -94,11 +98,23 @@ export default function FamilyHead() {
     setFilteredPcs(filtered);
   };
 
-  const handlePcsSelect = (person) => {
+  const handlePcsSelect = async (person) => {
     setPcsId(person._id);
     setPcsName(person.name);
     setPcsSearchText(person.name);
     setFilteredPcs([]);
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/general/${person._id}`
+      );
+      const pcsData = response.data.data;
+
+      setBcoId(pcsData.prince_id);
+      setBcoName(pcsData.prince_name);
+    } catch (error) {
+      console.error("Error fetching PCS data:", error);
+    }
   };
 
   const handleAddPcl = async () => {
@@ -134,7 +150,7 @@ export default function FamilyHead() {
         )
       ) {
         await axios.put(`http://localhost:3001/people/${pclId}`, {
-          role: "pcl"
+          role: "pcl",
         });
 
         await axios.post("http://localhost:3001/leader", {
@@ -147,6 +163,8 @@ export default function FamilyHead() {
           king_name: acName,
           general_id: pcsId,
           general_name: pcsName,
+          prince_id: bcoId,
+          prince_name: bcoName,
         });
 
         alert("PCL has been added successfully!");
