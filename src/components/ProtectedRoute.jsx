@@ -26,7 +26,7 @@ export default function ProtectedRoute({ allowedRoles }) {
           // Set a timeout to auto-logout when the token expires
           const remainingTime = (decoded.exp - currentTime) * 1000; // Convert to milliseconds
           timer = setTimeout(handleLogout, remainingTime);
-          console.log("Token expires in:", remainingTime / 1000, "seconds");
+          
           // Role check (independent of the timer)
           if (!allowedRoles.includes(role)) {
             setShowModal(true); // Show modal if role is not allowed
