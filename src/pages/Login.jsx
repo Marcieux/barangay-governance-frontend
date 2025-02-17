@@ -15,7 +15,7 @@ export default function Login() {
     const role = localStorage.getItem("role");
 
     if (token && role) {
-      navigate(role === "encoder" ? "/encode-name/set-general" : "/get-names");
+      navigate(role === "encoder" ? "/encode-name/set-pcs" : "/get-names");
     }
   }, [navigate]); 
 
@@ -33,7 +33,7 @@ export default function Login() {
       localStorage.setItem("role", role);
 
       if (role === "encoder") {
-        navigate("/encode-name/set-general"); // Restrict encoder to this route
+        navigate("/encode-name/set-pcs"); // Restrict encoder to this route
       } else {
         navigate("/get-names"); // Superadmin and admin route
       }
