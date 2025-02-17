@@ -78,7 +78,6 @@ export default function Bco({ onSelectBco = () => {} }) {
           });
 
           const newBcoId = response.data;
-          console.log("BCO added successfully:", newBcoId);
           // Update the Barangay's prince field with the new prince
           await axios.put(
             `http://localhost:3001/barangay/${selectedBarangay._id}/prince`,
