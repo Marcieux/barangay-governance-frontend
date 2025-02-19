@@ -22,6 +22,58 @@ export default function SearchPerson() {
   const [uplineDetails, setUplineDetails] = useState([]);
   const [downlineDetails, setDownlineDetails] = useState([]);
 
+  const [clusterRolePercentage, setClusterRolePercentage] = useState(null);
+  // Fetch people and calculate role percentage per cluster
+  useEffect(() => {
+    const fetchClusterData = async () => {
+      if (!selectedBarangay) return;
+
+      try {
+        // Fetch all voters in the barangay
+        const { data: peopleData } = await axios.get("http://localhost:3001/people/by-barangay", {
+          params: { barangay: selectedBarangay._id },
+        });
+
+        if (!peopleData || peopleData.length === 0) return;
+
+        // Group voters by cluster
+        const clusterMap = {};
+        peopleData.forEach((person) => {
+          if (!person.cluster) return;
+
+          if (!clusterMap[person.cluster]) {
+            clusterMap[person.cluster] = { total: 0, withRole: 0 };
+          }
+
+          clusterMap[person.cluster].total += 1;
+          if (person.role) clusterMap[person.cluster].withRole += 1;
+        });
+
+        // Compute percentage for each cluster
+        const percentageMap = {};
+        Object.entries(clusterMap).forEach(([cluster, { total, withRole }]) => {
+          const percentage = ((withRole / total) * 100).toFixed(2);
+          percentageMap[cluster] = percentage;
+        });
+
+        setClusterRolePercentage(percentageMap);
+      } catch (error) {
+        console.error("Error fetching cluster role percentage:", error);
+      }
+    };
+
+    fetchClusterData();
+  }, [selectedBarangay]);
+
+  const getClusterColor = (percentage) => {
+    if (percentage >= 50) return "bg-red-500"; // 50-100%
+    if (percentage >= 30) return "bg-orange-500"; // 30-50%
+    if (percentage >= 10) return "bg-blue-500"; // 10-30%
+    if (percentage > 0) return "bg-yellow-500"; // 1-10%
+    // return "bg-gray-400"; // Default (0%)
+  };
+
+  
   const handleBarangayChange = (barangay) => {
     setSelectedBarangay(barangay);
     // Clear all relevant state
@@ -72,12 +124,13 @@ export default function SearchPerson() {
     bco: "BCO",
     pcs: "PCS",
     pcl: "PCL",
+    fm: "FM",
   };
 
   const handlePeopleSelect = (person) => {
     setSelectedPerson({
       ...person,
-      roleLabel: ROLE_LABELS[person.role] || "-", // Add roleLabel
+      roleLabel: ROLE_LABELS[person.role] || "-",
     });
     setPeopleId(person._id);
     setPeopleSearchText(person.name);
@@ -87,7 +140,6 @@ export default function SearchPerson() {
   const handlePersonClick = (person) => {
     setSelectedPerson({
       ...person,
-      // Preserve roleLabel if already exists, otherwise generate it
       roleLabel: person.roleLabel || ROLE_LABELS[person.role] || "-",
     });
     setPeopleId(person._id);
@@ -190,10 +242,17 @@ export default function SearchPerson() {
         );
 
         if (matchingPcl) {
-          // Fetch the angatchair
+          // Fetch the angatchair,bco, and pcs
           const angatchair = peopleData.find(
             (person) => person._id === matchingPcl.king_id
           );
+          const bco = peopleData.find(
+            (person) => person._id === matchingPcl.prince_id
+          );
+          const pcs = peopleData.find(
+            (person) => person._id === matchingPcl.general_id
+          );
+
           if (angatchair) {
             uplineDetails.push({
               ...angatchair,
@@ -201,43 +260,74 @@ export default function SearchPerson() {
               roleLabel: "Angat Chair",
             });
           }
+          if (bco) {
+            uplineDetails.push({
+              ...bco,
+              role: "bco",
+              roleLabel: "BCO",
+            });
+          }
+          if (pcs) {
+            uplineDetails.push({
+              ...pcs,
+              role: "pcs",
+              roleLabel: "PCS",
+            });
+          }
+        }
+      } else if (role === "fm") {
+        // fm's upline is the angatchair, bco, pcs and pcl
+        const fmResponse = await axios.get(`http://localhost:3001/member`, {
+          params: { barangay: selectedBarangay._id },
+        });
+        const fmData = fmResponse.data.data;
 
-          // Fetch the pcs
-          const pcsResponse = await axios.get(
-            `http://localhost:3001/general`,
-            {
-              params: { barangay: selectedBarangay._id },
-            }
+        const matchingFm = fmData.find(
+          (person) => person.member_id === _id
+        );
+
+        if (matchingFm) {
+          // Fetch the angatchair, bco, pcs and pcl
+          const angatchair = peopleData.find(
+            (person) => person._id === matchingFm.king_id
           );
-          const pcsData = pcsResponse.data;
-
-          const matchingPcs = pcsData.find(
-            (person) => person.general_id === matchingPcl.general_id
+          const bco = peopleData.find(
+            (person) => person._id === matchingFm.prince_id
+          );
+          const pcs = peopleData.find(
+            (person) => person._id === matchingFm.general_id
+          );
+          const pcl = peopleData.find(
+            (person) => person._id === matchingFm.leader_id
           );
 
-          if (matchingPcs) {
-            // Fetch the bco associated with the general
-            const bco = peopleData.find(
-              (person) => person._id === matchingPcs.prince_id
-            );
-            if (bco) {
-              uplineDetails.push({
-                ...bco,
-                role: "bco",
-                roleLabel: "BCO",
-              });
-            }
-
-            const pcs = peopleData.find(
-              (person) => person._id === matchingPcs.general_id
-            );
-            if (pcs) {
-              pcs.push({
-                ...pcs,
-                role: "pcs",
-                roleLabel: "PCS",
-              });
-            }
+          if (angatchair) {
+            uplineDetails.push({
+              ...angatchair,
+              role: "angatchair",
+              roleLabel: "Angat Chair",
+            });
+          }
+          if (bco) {
+            uplineDetails.push({
+              ...bco,
+              role: "bco",
+              roleLabel: "BCO",
+            });
+          }
+          if (pcs) {
+            uplineDetails.push({
+             ...pcs,
+              role: "pcs",
+              roleLabel: "PCS",
+            });
+          }
+          if (pcl) {
+            uplineDetails.push({
+             ...pcl,
+              role: "pcl",
+              roleLabel: "PCL",
+            });
           }
         }
       }
@@ -279,29 +369,29 @@ export default function SearchPerson() {
 
     try {
       const { role, _id } = selectedPerson;
-
       // Determine the endpoint based on the selected person's role
-      const endpoint =
-        role === "angatchair"
-          ? "prince"
-          : role === "bco"
-          ? "general"
-          : role === "pcs"
-          ? "leader"
-          : null;
+      const roleToDownline = {
+        angatchair: { endpoint: "prince", filterKey: "king_id", roleLabel: "BCO" },
+        bco: { endpoint: "general", filterKey: "prince_id", roleLabel: "PCS" },
+        pcs: { endpoint: "leader", filterKey: "general_id", roleLabel: "PCL" },
+        pcl: { endpoint: "member", filterKey: "leader_id", roleLabel: "FM" },
+      };
 
-      if (!endpoint) {
-        // Leaders don't have downlines
+      const roleData = roleToDownline[role];
+
+      if (!roleData) {
         return {
           NoDownline: [{ name: "No downline available", role: "Unknown" }],
         };
       }
 
+      const { endpoint, filterKey, roleLabel} = roleData;
+
       const response = await axios.get(`http://localhost:3001/${endpoint}`, {
         params: { barangay: selectedBarangay._id },
       });
 
-      const data = endpoint === "leader" ? response.data.data : response.data;
+      const data = endpoint === "leader" || endpoint === "member" ? response.data.data : response.data;
 
       // Fetch full details from the people collection
       const peopleResponse = await axios.get(
@@ -313,10 +403,7 @@ export default function SearchPerson() {
       const peopleData = peopleResponse.data;
 
       // Filter downline based on the selected person's role
-      const downlineData = data.filter(
-        (person) => person[`${role}_id`] === _id
-      );
-
+      const downlineData = data.filter((person) => person[filterKey] === _id);
       if (downlineData.length === 0) {
         return {
           NoDownline: [
@@ -327,18 +414,14 @@ export default function SearchPerson() {
           ],
         };
       }
-
-      // Determine roleLabel based on the endpoint (downline type)
-      const roleLabel =
-        endpoint === "prince"
-          ? "BCO"
-          : endpoint === "general"
-          ? "PCS"
-          : endpoint === "leader"
-          ? "PCL"
-          : "Unknown";
-
-      // Format downline details with role keys and labels
+          // Add endpoint to role mapping
+      const ENDPOINT_TO_ROLE = {
+        prince: "bco",
+        general: "pcs",
+        leader: "pcl",
+        member: "fm"
+      };
+      
       const downlineDetails = downlineData.map((person) => {
         const mergedPerson = peopleData.find(
           (p) => p._id === person[`${endpoint}_id`]
@@ -346,12 +429,11 @@ export default function SearchPerson() {
 
         return {
           ...mergedPerson,
-          role: endpoint, // Preserve original role key ("bco", "pcs", etc.)
-          roleLabel, // Add display label ("BCO", "PCS", etc.)
+          role: ENDPOINT_TO_ROLE[endpoint],
+          roleLabel,
         };
       });
 
-      // Group by role
       return { [roleLabel]: downlineDetails };
     } catch (error) {
       console.error("Error fetching downline details:", error);
@@ -390,7 +472,7 @@ export default function SearchPerson() {
       </div>
 
       {/* DETAILS */}
-      <div className="bg-white p-6 rounded shadow-md w-[800px] text-left">
+      <div className="bg-white p-6 rounded shadow-md w-[800px] text-left text-red-500">
         <h3 className="text-xl font-bold mb-5">DETAILS</h3>
         <table className="w-full border-collapse text-sm">
           <tbody>
@@ -418,8 +500,28 @@ export default function SearchPerson() {
             </tr>
             <tr>
               <td className="border p-2 font-bold w-1/5">ROLE: </td>
-              <td className="border p-2 w-4/5 text-red-500 font-semibold uppercase">
+              <td className="border p-2 w-4/5 font-semibold uppercase">
                 {selectedPerson.roleLabel || "-"}
+              </td>
+            </tr>
+            <tr>
+              <td className="border p-2 font-bold w-1/5">CLUSTER: </td>
+              <td className="border p-2 w-4/5 font-semibold uppercase flex items-center gap-2">
+                {selectedPerson.cluster || "-"}
+                
+                 {/* Uncomment to show percentage in the future */}
+                {/* {selectedPerson.cluster && clusterRolePercentage?.[selectedPerson.cluster] !== null && (
+                  <span className="text-gray-700 text-sm">
+                    ({clusterRolePercentage[selectedPerson.cluster]}%)
+                  </span>
+                )} */}
+
+                {/* Color Indicator */}
+                {selectedPerson.cluster && (
+                  <span
+                    className={`w-4 h-4 rounded-full ${getClusterColor(clusterRolePercentage?.[selectedPerson.cluster] || 0)}`}
+                  ></span>
+                )}
               </td>
             </tr>
           </tbody>
