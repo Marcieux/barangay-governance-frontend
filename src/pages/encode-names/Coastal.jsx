@@ -85,13 +85,13 @@ export default function Coastal() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${coastalId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${coastalId}`, {
           functionary: "coastal",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/coastal`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/coastal`,
           {
             coastal: [...selectedBarangay.coastal, coastalId],
           }

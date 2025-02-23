@@ -15,7 +15,7 @@ export default function ReferralNumber({ personId }) {
     if (referralNumber.length === 11) {
       if (window.confirm("Are you sure you want to add this number?")) {
         try {
-          await axios.put(`http://localhost:3001/people/${personId}`, {
+          await axios.put(`${process.env.REACT_APP_API_URL}/people/${personId}`, {
             number: referralNumber,
           });
           alert("Referral's number added successfully!");

@@ -85,13 +85,13 @@ export default function PublicSafety() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${publicSafetyId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${publicSafetyId}`, {
           functionary: "public safety",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/public-safety`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/public-safety`,
           {
             public_safety: [...selectedBarangay.public_safety, publicSafetyId],
           }

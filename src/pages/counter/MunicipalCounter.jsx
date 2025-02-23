@@ -14,14 +14,14 @@ export default function MunicipalCounter() {
       try {
         // First fetch the list of municipalities from API
         const municipalitiesRes = await axios.get(
-          "http://localhost:3001/barangay/municipalities"
+          `${process.env.REACT_APP_API_URL}/barangay/municipalities`
         );
         const municipalitiesList = municipalitiesRes.data.municipalities;
 
         // Then fetch both people counts and targets
         const [peopleRes, targetsRes] = await Promise.all([
-          axios.get("http://localhost:3001/people/roles-by-municipality"),
-          axios.get("http://localhost:3001/barangay/targets-by-municipality"),
+          axios.get(`${process.env.REACT_APP_API_URL}/people/roles-by-municipality`),
+          axios.get(`${process.env.REACT_APP_API_URL}/barangay/targets-by-municipality`),
         ]);
 
         // Merge data

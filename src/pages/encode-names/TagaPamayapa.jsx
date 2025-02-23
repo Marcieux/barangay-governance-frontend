@@ -91,13 +91,13 @@ export default function TagaPamayapa() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${tagapamayapaId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${tagapamayapaId}`, {
           functionary: "tagapamayapa",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/tagapamayapa`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/tagapamayapa`,
           {
             tagapamayapa: [...selectedBarangay.tagapamayapa, tagapamayapaId],
           }

@@ -12,7 +12,7 @@ export const BarangayProvider = ({ children }) => {
   useEffect(() => {
     const fetchBarangays = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/barangay");
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/barangay`);
         setBarangays(response.data);
       } catch (err) {
         console.error("Error fetching barangays:", err);
@@ -27,7 +27,7 @@ export const BarangayProvider = ({ children }) => {
       if (selectedBarangay && selectedBarangay._id) {
         try {
           const response = await axios.get(
-            "http://localhost:3001/people/by-barangay",
+            `${process.env.REACT_APP_API_URL}/people/by-barangay`,
             {
               params: { barangay: selectedBarangay._id },
             }

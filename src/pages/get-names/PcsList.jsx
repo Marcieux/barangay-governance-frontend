@@ -53,7 +53,7 @@ export default function PcsList() {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:3001/people/by-barangay",
+        `${process.env.REACT_APP_API_URL}/people/by-barangay`,
         {
           params: { barangay: selectedBarangay._id },
         }
@@ -75,7 +75,7 @@ export default function PcsList() {
         }));
 
       // Fetch the pcl data based on general
-      const pclResponse = await axios.get("http://localhost:3001/leader/", {
+      const pclResponse = await axios.get(`${process.env.REACT_APP_API_URL}/leader/`, {
         params: { general_id: general_id },
       });
 

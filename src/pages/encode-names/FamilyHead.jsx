@@ -106,7 +106,7 @@ export default function FamilyHead() {
 
     try {
       const response = await axios.get(
-        `http://localhost:3001/general/${person._id}`
+        `${process.env.REACT_APP_API_URL}/general/${person._id}`
       );
       const pcsData = response.data.data;
 
@@ -130,7 +130,7 @@ export default function FamilyHead() {
 
     try {
       const { data: personData } = await axios.get(
-        `http://localhost:3001/people/${pclId}`
+        `${process.env.REACT_APP_API_URL}/people/${pclId}`
       );
 
       // Check if the selected person already has restricted roles
@@ -149,11 +149,11 @@ export default function FamilyHead() {
           `Are you sure you want to set '${pclName}' as PCL of '${selectedBarangay.barangay_name}'?`
         )
       ) {
-        await axios.put(`http://localhost:3001/people/${pclId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${pclId}`, {
           role: "pcl",
         });
 
-        await axios.post("http://localhost:3001/leader", {
+        await axios.post(`${process.env.REACT_APP_API_URL}/leader`, {
           leader_id: pclId,
           leader_name: pclName,
           precinct: precinct,

@@ -87,13 +87,13 @@ export default function PurokChair() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${purokChairId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${purokChairId}`, {
           functionary: "purok chair",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/purok-chair`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/purok-chair`,
           {
             purok_chair: [...selectedBarangay.purok_chair, purokChairId],
           }

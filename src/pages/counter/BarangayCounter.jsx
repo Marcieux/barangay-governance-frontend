@@ -22,12 +22,12 @@ export default function BarangayCounter() {
         const [barangaysRes, bcoRes, pcsRes, pclRes, fmRes] =
           await Promise.all([
             axios.get(
-              `http://localhost:3001/barangay/by-municipality/${municipality}`
+              `${process.env.REACT_APP_API_URL}/barangay/by-municipality/${municipality}`
             ),
-            axios.get("http://localhost:3001/prince"),
-            axios.get("http://localhost:3001/general"),
-            axios.get("http://localhost:3001/leader"),
-            axios.get("http://localhost:3001/member"),
+            axios.get(`${process.env.REACT_APP_API_URL}/prince`),
+            axios.get(`${process.env.REACT_APP_API_URL}/general`),
+            axios.get(`${process.env.REACT_APP_API_URL}/leader`),
+            axios.get(`${process.env.REACT_APP_API_URL}/member`),
           ]);
 
         // Get all barangay IDs in the municipality

@@ -35,10 +35,8 @@ import PclFmList from "./pages/get-names/PclFmList";
 function App() {
   useEffect(() => {
     axios
-      .get("http://localhost:3001/")
-      .then((res) => {
-        console.log(res.data); // Should log: "Backend is connected!"
-      })
+      .get(`${process.env.REACT_APP_API_URL}/`)
+      .then((res) => console.log(res.data))
       .catch((err) => console.error("Error connecting to backend:", err));
   }, []);
 

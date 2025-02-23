@@ -63,7 +63,7 @@ export default function BcoList() {
     try {
       // Fetch the people data to filter pcs based on the barangay and role
       const response = await axios.get(
-        "http://localhost:3001/people/by-barangay",
+        `${process.env.REACT_APP_API_URL}/people/by-barangay`,
         {
           params: { barangay: selectedBarangay._id },
         }
@@ -86,7 +86,7 @@ export default function BcoList() {
 
       // Fetch the pcs data based on prince_id
       const pcsResponse = await axios.get(
-        "http://localhost:3001/general/",
+        `${process.env.REACT_APP_API_URL}/general/`,
         {
           params: { prince_id: prince_id },
         }

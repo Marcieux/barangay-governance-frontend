@@ -84,13 +84,13 @@ export default function BantayDagat() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${bantayDagatId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${bantayDagatId}`, {
           functionary: "bantay dagat",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/bantay-dagat`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/bantay-dagat`,
           {
             bantay_dagat: [...selectedBarangay.bantay_dagat, bantayDagatId],
           }

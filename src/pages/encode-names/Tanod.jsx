@@ -85,13 +85,13 @@ export default function Tanod() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${tanodId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${tanodId}`, {
           functionary: "tanod",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/tanod`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/tanod`,
           {
             tanod: [...selectedBarangay.tanod, tanodId],
           }

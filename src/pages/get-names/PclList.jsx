@@ -56,7 +56,7 @@ export default function PclList() {
 
     try {
       const response = await axios.get(
-        "http://localhost:3001/people/by-barangay",
+        `${process.env.REACT_APP_API_URL}/people/by-barangay`,
         {
           params: { barangay: selectedBarangay._id },
         }
@@ -78,7 +78,7 @@ export default function PclList() {
         }));
 
       // Fetch the fm data based on leader
-      const fmResponse = await axios.get("http://localhost:3001/member/", {
+      const fmResponse = await axios.get(`${process.env.REACT_APP_API_URL}/member/`, {
         params: { leader_id: leader_id },
       });
 

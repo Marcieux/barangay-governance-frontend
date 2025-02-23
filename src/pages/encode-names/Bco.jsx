@@ -32,7 +32,7 @@ export default function Bco({ onSelectBco = () => {} }) {
 
     try {
       const { data: personData } = await axios.get(
-        `http://localhost:3001/people/${bcoId}`
+        `${process.env.REACT_APP_API_URL}/people/${bcoId}`
       );
 
       const restrictedRoles = ["bco", "pcs", "pcl", "fm"];
@@ -63,11 +63,11 @@ export default function Bco({ onSelectBco = () => {} }) {
         )
       ) {
         try {
-          await axios.put(`http://localhost:3001/people/${bcoId}`, {
+          await axios.put(`${process.env.REACT_APP_API_URL}/people/${bcoId}`, {
             role: "bco"
           });
 
-          const response = await axios.post("http://localhost:3001/prince", {
+          const response = await axios.post(`${process.env.REACT_APP_API_URL}/prince`, {
             prince_id: bcoId,
             prince_name: bcoName,
             barangay_name: selectedBarangay.barangay_name,
@@ -80,7 +80,7 @@ export default function Bco({ onSelectBco = () => {} }) {
           const newBcoId = response.data;
           // Update the Barangay's prince field with the new prince
           await axios.put(
-            `http://localhost:3001/barangay/${selectedBarangay._id}/prince`,
+            `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/prince`,
             {
               prince_id: [...selectedBarangay.prince_id, newBcoId.prince_id], // Add the new prince to the existing list
             }

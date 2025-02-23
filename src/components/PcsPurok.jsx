@@ -20,7 +20,7 @@ export default function PcsPurok({ personId }) {
     try {
       // Fetch the pcs data for validation
       const pcsResponse = await axios.get(
-        `http://localhost:3001/general/${personId}`
+        `${process.env.REACT_APP_API_URL}/general/${personId}`
       );
 
       if (!pcsResponse.data.success) {
@@ -33,7 +33,7 @@ export default function PcsPurok({ personId }) {
 
       // Fetch the person's data
       const personResponse = await axios.get(
-        `http://localhost:3001/people/${personId}`
+        `${process.env.REACT_APP_API_URL}/people/${personId}`
       );
 
       const personData = personResponse.data;
@@ -46,12 +46,12 @@ export default function PcsPurok({ personId }) {
 
       // Proceed with updates
       const personUpdate = axios.put(
-        `http://localhost:3001/people/${personId}`,
+        `${process.env.REACT_APP_API_URL}/people/${personId}`,
         { purok: selectedPurok }
       );
 
       const pcsUpdate = axios.put(
-        `http://localhost:3001/general/${personId}`,
+        `${process.env.REACT_APP_API_URL}/general/${personId}`,
         { purok: selectedPurok }
       );
 

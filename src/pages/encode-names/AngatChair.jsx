@@ -49,16 +49,16 @@ export default function AngatChair() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${acId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${acId}`, {
           role: "angatchair",
         });
 
-        await axios.put(`http://localhost:3001/barangay/${selectedBarangay._id}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}`, {
           king_id: acId,
           king_name: acName,
         });
         alert("Angat Chair has been added successfully!");
-        const { data } = await axios.get("http://localhost:3001/barangay");
+        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/barangay`);
         setBarangays(data);
 
         setSelectedPerson(acId);

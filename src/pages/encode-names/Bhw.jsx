@@ -85,13 +85,13 @@ export default function Bhw() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${bhwId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${bhwId}`, {
           functionary: "bhw",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/bhw`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/bhw`,
           {
             bhw: [...selectedBarangay.bhw, bhwId],
           }

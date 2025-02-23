@@ -156,7 +156,7 @@ export default function ReferralPage() {
       window.confirm("Click 'Yes' to add the details.")
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${peopleId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${peopleId}`, {
           referred_by: referralSearchText,
           referred_by_id: referralId,
           number: personNumber,

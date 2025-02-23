@@ -30,7 +30,7 @@ export default function SearchPerson() {
 
       try {
         // Fetch all voters in the barangay
-        const { data: peopleData } = await axios.get("http://localhost:3001/people/by-barangay", {
+        const { data: peopleData } = await axios.get(`${process.env.REACT_APP_API_URL}/people/by-barangay`, {
           params: { barangay: selectedBarangay._id },
         });
 
@@ -162,7 +162,7 @@ export default function SearchPerson() {
 
       // Fetch full details from the people collection
       const peopleResponse = await axios.get(
-        "http://localhost:3001/people/by-barangay",
+        `${process.env.REACT_APP_API_URL}/people/by-barangay`,
         {
           params: { barangay: selectedBarangay._id },
         }
@@ -172,7 +172,7 @@ export default function SearchPerson() {
       // Fetch data based on the selected person's role
       if (role === "bco") {
         // bco's upline is the angatchair
-        const bcoResponse = await axios.get(`http://localhost:3001/prince`, {
+        const bcoResponse = await axios.get(`${process.env.REACT_APP_API_URL}/prince`, {
           params: { barangay: selectedBarangay._id },
         });
         const bcoData = bcoResponse.data;
@@ -196,7 +196,7 @@ export default function SearchPerson() {
       } else if (role === "pcs") {
         // pcs upline is the angat chair and bco
         const pcsResponse = await axios.get(
-          `http://localhost:3001/general`,
+          `${process.env.REACT_APP_API_URL}/general`,
           {
             params: { barangay: selectedBarangay._id },
           }
@@ -232,7 +232,7 @@ export default function SearchPerson() {
         }
       } else if (role === "pcl") {
         // pcl's upline is the angatchair, bco, and pcs
-        const pclResponse = await axios.get(`http://localhost:3001/leader`, {
+        const pclResponse = await axios.get(`${process.env.REACT_APP_API_URL}/leader`, {
           params: { barangay: selectedBarangay._id },
         });
         const pclData = pclResponse.data.data;
@@ -277,7 +277,7 @@ export default function SearchPerson() {
         }
       } else if (role === "fm") {
         // fm's upline is the angatchair, bco, pcs and pcl
-        const fmResponse = await axios.get(`http://localhost:3001/member`, {
+        const fmResponse = await axios.get(`${process.env.REACT_APP_API_URL}/member`, {
           params: { barangay: selectedBarangay._id },
         });
         const fmData = fmResponse.data.data;
@@ -387,7 +387,7 @@ export default function SearchPerson() {
 
       const { endpoint, filterKey, roleLabel} = roleData;
 
-      const response = await axios.get(`http://localhost:3001/${endpoint}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/${endpoint}`, {
         params: { barangay: selectedBarangay._id },
       });
 
@@ -395,7 +395,7 @@ export default function SearchPerson() {
 
       // Fetch full details from the people collection
       const peopleResponse = await axios.get(
-        "http://localhost:3001/people/by-barangay",
+        `${process.env.REACT_APP_API_URL}/people/by-barangay`,
         {
           params: { barangay: selectedBarangay._id },
         }

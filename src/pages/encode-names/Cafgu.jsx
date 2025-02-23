@@ -92,13 +92,13 @@ export default function Cafgu() {
       )
     ) {
       try {
-        await axios.put(`http://localhost:3001/people/${cafguId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${cafguId}`, {
           functionary: "cafgu",
           barangay_id: selectedBarangay._id,
         });
 
         await axios.put(
-          `http://localhost:3001/barangay/${selectedBarangay._id}/cafgu`,
+          `${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}/cafgu`,
           {
             cafgu: [...selectedBarangay.cafgu, cafguId],
           }

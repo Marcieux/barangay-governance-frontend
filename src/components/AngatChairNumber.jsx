@@ -15,7 +15,7 @@ export default function AngatChairNumber({ personId, onSuccess }) {
     if (acNumber.length === 11) {
       if (window.confirm("Are you sure you want to add this number?")) {
         try {
-          await axios.put(`http://localhost:3001/people/${personId}`, {
+          await axios.put(`${process.env.REACT_APP_API_URL}/people/${personId}`, {
             number: acNumber,
           });
           alert("Angat Chair's number added successfully!");

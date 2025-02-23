@@ -111,7 +111,7 @@ export default function FamilyGroup() {
 
     try {
       const response = await axios.get(
-        `http://localhost:3001/leader/${person._id}`
+        `${process.env.REACT_APP_API_URL}/leader/${person._id}`
       );
       const pclData = response.data.data;
 
@@ -137,7 +137,7 @@ export default function FamilyGroup() {
    
     try {
       const { data: personData } = await axios.get(
-        `http://localhost:3001/people/${fmId}`
+        `${process.env.REACT_APP_API_URL}/people/${fmId}`
       );
 
       // Check if the selected person already has restricted roles
@@ -156,11 +156,11 @@ export default function FamilyGroup() {
           `Are you sure you want to set '${fmName}' as FM of '${selectedBarangay.barangay_name}'?`
         )
       ) {
-        await axios.put(`http://localhost:3001/people/${fmId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${fmId}`, {
           role: "fm"
         });
 
-        await axios.post("http://localhost:3001/member", {
+        await axios.post(`${process.env.REACT_APP_API_URL}/member`, {
           member_id: fmId,
           member_name: fmName,
           precinct: precinct,

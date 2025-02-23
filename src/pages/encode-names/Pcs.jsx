@@ -82,7 +82,7 @@ export default function Pcs() {
 
     try {
       const { data: personData } = await axios.get(
-        `http://localhost:3001/people/${pcsId}`
+        `${process.env.REACT_APP_API_URL}/people/${pcsId}`
       );
 
       // Check if the selected person is already a prince
@@ -102,11 +102,11 @@ export default function Pcs() {
           `Are you sure you want to set '${pcsName}' as PCS of '${selectedBarangay.barangay_name}'?`
         )
       ) {
-        await axios.put(`http://localhost:3001/people/${pcsId}`, {
+        await axios.put(`${process.env.REACT_APP_API_URL}/people/${pcsId}`, {
           role: "pcs",
         });
 
-        await axios.post("http://localhost:3001/general", {
+        await axios.post(`${process.env.REACT_APP_API_URL}/general`, {
           general_id: pcsId,
           general_name: pcsName,
           precinct: precinct,

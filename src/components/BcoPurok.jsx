@@ -20,7 +20,7 @@ export default function BcoPurok({ personId }) {
     try {
       // Fetch the bco data for validation
       const bcoResponse = await axios.get(
-        `http://localhost:3001/prince/${personId}`
+        `${process.env.REACT_APP_API_URL}/prince/${personId}`
       );
       
       if (!bcoResponse.data || !bcoResponse.data.success) {
@@ -33,7 +33,7 @@ export default function BcoPurok({ personId }) {
 
       // Fetch the person's data
       const personResponse = await axios.get(
-        `http://localhost:3001/people/${personId}`
+        `${process.env.REACT_APP_API_URL}/people/${personId}`
       );
 
       const personData = personResponse.data;
@@ -46,12 +46,12 @@ export default function BcoPurok({ personId }) {
 
       // Proceed with updates
       const personUpdate = axios.put(
-        `http://localhost:3001/people/${personId}`,
+        `${process.env.REACT_APP_API_URL}/people/${personId}`,
         { purok: selectedPurok }
       );
 
       const bcoUpdate = axios.put(
-        `http://localhost:3001/prince/${personId}`,
+        `${process.env.REACT_APP_API_URL}/prince/${personId}`,
         { purok: selectedPurok }
       );
 

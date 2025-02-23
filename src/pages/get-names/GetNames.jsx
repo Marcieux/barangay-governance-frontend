@@ -25,16 +25,16 @@ export default function GetNames() {
         try {
           const [bcoRes, pcsRes, pclRes, fmRes] =
             await Promise.all([
-              axios.get("http://localhost:3001/prince/stats/count", {
+              axios.get(`${process.env.REACT_APP_API_URL}/prince/stats/count`, {
                 params: { barangay: selectedBarangay._id },
               }),
-              axios.get("http://localhost:3001/general/stats/count", {
+              axios.get(`${process.env.REACT_APP_API_URL}/general/stats/count`, {
                 params: { barangay: selectedBarangay._id },
               }),
-              axios.get("http://localhost:3001/leader/stats/count", {
+              axios.get(`${process.env.REACT_APP_API_URL}/leader/stats/count`, {
                 params: { barangay: selectedBarangay._id },
               }),
-              axios.get("http://localhost:3001/member/stats/count", {
+              axios.get(`${process.env.REACT_APP_API_URL}/member/stats/count`, {
                 params: { barangay: selectedBarangay._id },
               }),
             ]);
@@ -63,7 +63,7 @@ export default function GetNames() {
       setLoading(true);
       try {
         const response = await axios.get(
-          "http://localhost:3001/people/by-barangay",
+          `${process.env.REACT_APP_API_URL}/people/by-barangay`,
           {
             params: { barangay: selectedBarangay._id },
           }
@@ -89,7 +89,7 @@ export default function GetNames() {
 
         // Fetch all bco data from the selected barangay
         const bcoResponse = await axios.get(
-          "http://localhost:3001/prince/",
+          `${process.env.REACT_APP_API_URL}/prince/`,
           {
             params: { barangay: selectedBarangay._id },
           }
@@ -139,7 +139,7 @@ export default function GetNames() {
       try {
         // Fetch the people data to filter pcs based on the barangay and role
         const peopleResponse = await axios.get(
-          "http://localhost:3001/people/by-barangay",
+          `${process.env.REACT_APP_API_URL}/people/by-barangay`,
           {
             params: { barangay: selectedBarangay._id },
           }
@@ -162,7 +162,7 @@ export default function GetNames() {
 
         // Fetch the pcs data for the selected barangay
         const pcsResponse = await axios.get(
-          "http://localhost:3001/general",
+          `${process.env.REACT_APP_API_URL}/general`,
           {
             params: { barangay: selectedBarangay._id },
           }
@@ -219,7 +219,7 @@ export default function GetNames() {
       try {
         // Fetch the people data to filter pcl based on the barangay and role
         const peopleResponse = await axios.get(
-          "http://localhost:3001/people/by-barangay",
+          `${process.env.REACT_APP_API_URL}/people/by-barangay`,
           {
             params: { barangay: selectedBarangay._id },
           }
@@ -241,7 +241,7 @@ export default function GetNames() {
           }));
 
         // Fetch the pcl data for the selected barangay
-        const pclResponse = await axios.get("http://localhost:3001/leader", {
+        const pclResponse = await axios.get(`${process.env.REACT_APP_API_URL}/leader`, {
           params: { barangay: selectedBarangay._id },
         });
 
@@ -297,7 +297,7 @@ export default function GetNames() {
       try {
         // Fetch the people data to filter fm based on the barangay and role
         const peopleResponse = await axios.get(
-          "http://localhost:3001/people/by-barangay",
+          `${process.env.REACT_APP_API_URL}/people/by-barangay`,
           {
             params: { barangay: selectedBarangay._id },
           }
@@ -319,7 +319,7 @@ export default function GetNames() {
           }));
 
         // Fetch the fm data for the selected barangay
-        const fmResponse = await axios.get("http://localhost:3001/member", {
+        const fmResponse = await axios.get(`${process.env.REACT_APP_API_URL}/member`, {
           params: { barangay: selectedBarangay._id },
         });
 
