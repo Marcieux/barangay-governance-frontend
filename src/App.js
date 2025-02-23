@@ -31,7 +31,7 @@ import Navigation from "./components/Navigation";
 import FamilyGroup from "./pages/encode-names/FamilyGroup";
 import FmList from "./pages/get-names/FmList";
 import PclFmList from "./pages/get-names/PclFmList";
-
+import { Navigate } from "react-router-dom";
 function App() {
   useEffect(() => {
     axios
@@ -48,6 +48,7 @@ function App() {
           <main className="pt-20 pb-8 px-4 sm:px-6 lg:px-8"> {/* Added padding for nav */}
             <Routes>
               {/* Public Route */}
+              <Route path="/" element={<Navigate to="/login" />} />  {/* Redirect to Login */}
               <Route path="/login" element={<Login />} />
 
               {/* Encoder Routes */}
