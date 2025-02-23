@@ -211,15 +211,15 @@ export default function BarangayCounter() {
                     {barangay.target.toLocaleString()}
                   </div>
                   <div className="flex justify-between items-center">
-                    <span>ABLC:</span>
+                    <span>BCO:</span>
                     <span className="font-semibold">{barangay.bcoCount}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span>APC:</span>
+                    <span>PCS:</span>
                     <span className="font-semibold">{barangay.pcsCount}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span>FL:</span>
+                    <span>PCL:</span>
                     <span className="font-semibold">{barangay.pclCount}</span>
                   </div>
                   <div className="flex justify-between items-center">
