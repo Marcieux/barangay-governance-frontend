@@ -7,6 +7,8 @@ export default function Navigation() {
   const [showEncoderDropdown, setShowEncoderDropdown] = useState(false);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("token"); // Check if the token exists
+
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token
     localStorage.removeItem("role"); // Remove role
@@ -119,15 +121,17 @@ export default function Navigation() {
             </div>
           </div>
 
-          {/* Logout Button */}
-          <div className="flex items-center">
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Log Out
-            </button>
-          </div>
+          {/* Logout Button: Display only if the user is signed in (token exists) */}
+          {token && (
+            <div className="flex items-center">
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              >
+                Log Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
