@@ -35,7 +35,7 @@ export default function Bco({ onSelectBco = () => {} }) {
         `${process.env.REACT_APP_API_URL}/people/${bcoId}`
       );
 
-      const restrictedRoles = ["bco", "pcs", "pcl", "fm"];
+      const restrictedRoles = ["prince", "general", "leader", "member"];
       if (restrictedRoles.includes(personData.role)) {
         alert(
           `This person '${bcoName}' already holds the role of '${personData.role}' and cannot be added as an BCO.`

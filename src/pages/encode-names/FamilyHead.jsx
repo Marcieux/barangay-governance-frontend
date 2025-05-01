@@ -134,7 +134,7 @@ export default function FamilyHead() {
       );
 
       // Check if the selected person already has restricted roles
-      const restrictedRoles = ["bco", "pcs", "pcl", "fm"];
+      const restrictedRoles = ["prince", "general", "leader", "member"];
       if (restrictedRoles.includes(personData.role)) {
         alert(
           `This person '${pclName}' already holds the role of '${personData.role}' and cannot be added as an PCL.`
