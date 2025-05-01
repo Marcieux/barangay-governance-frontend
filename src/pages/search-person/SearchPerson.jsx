@@ -120,11 +120,11 @@ export default function SearchPerson() {
 
   // Add role-to-label mapping
   const ROLE_LABELS = {
-    angatchair: "Angat Chair",
-    bco: "BCO",
-    pcs: "PCS",
-    pcl: "PCL",
-    fm: "FM",
+    king: "Angat Chair",
+    prince: "BCO",
+    general: "PCS",
+    leader: "PCL",
+    member: "FM",
   };
 
   const handlePeopleSelect = (person) => {
@@ -170,7 +170,7 @@ export default function SearchPerson() {
       const peopleData = peopleResponse.data;
 
       // Fetch data based on the selected person's role
-      if (role === "bco") {
+      if (role === "prince") {
         // bco's upline is the angatchair
         const bcoResponse = await axios.get(`${process.env.REACT_APP_API_URL}/prince`, {
           params: { barangay: selectedBarangay._id },
@@ -182,18 +182,18 @@ export default function SearchPerson() {
         );
 
         if (matchingBco) {
-          const angatchair = peopleData.find(
+          const king = peopleData.find(
             (person) => person._id === matchingBco.king_id
           );
-          if (angatchair) {
+          if (king) {
             uplineDetails.push({
-              ...angatchair,
-              role: "angatchair", 
+              ...king,
+              role: "king", 
               roleLabel: "Angat Chair",
             });
           }
         }
-      } else if (role === "pcs") {
+      } else if (role === "general") {
         // pcs upline is the angat chair and bco
         const pcsResponse = await axios.get(
           `${process.env.REACT_APP_API_URL}/general`,
@@ -208,29 +208,29 @@ export default function SearchPerson() {
         );
 
         if (matchingPcs) {
-          const angatchair = peopleData.find(
+          const king = peopleData.find(
             (person) => person._id === matchingPcs.king_id
           );
-          const bco = peopleData.find(
+          const prince = peopleData.find(
             (person) => person._id === matchingPcs.prince_id
           );
 
-          if (angatchair) {
+          if (king) {
             uplineDetails.push({
-              ...angatchair,
-              role: "angatchair",
+              ...king,
+              role: "king",
               roleLabel: "Angat Chair",
             });
           }
-          if (bco) {
+          if (prince) {
             uplineDetails.push({
-              ...bco,
-              role: "bco",
+              ...prince,
+              role: "prince",
               roleLabel: "BCO",
             });
           }
         }
-      } else if (role === "pcl") {
+      } else if (role === "leader") {
         // pcl's upline is the angatchair, bco, and pcs
         const pclResponse = await axios.get(`${process.env.REACT_APP_API_URL}/leader`, {
           params: { barangay: selectedBarangay._id },
@@ -243,39 +243,39 @@ export default function SearchPerson() {
 
         if (matchingPcl) {
           // Fetch the angatchair,bco, and pcs
-          const angatchair = peopleData.find(
+          const king = peopleData.find(
             (person) => person._id === matchingPcl.king_id
           );
-          const bco = peopleData.find(
+          const prince = peopleData.find(
             (person) => person._id === matchingPcl.prince_id
           );
-          const pcs = peopleData.find(
+          const general = peopleData.find(
             (person) => person._id === matchingPcl.general_id
           );
 
-          if (angatchair) {
+          if (king) {
             uplineDetails.push({
-              ...angatchair,
-              role: "angatchair",
+              ...king,
+              role: "king",
               roleLabel: "Angat Chair",
             });
           }
-          if (bco) {
+          if (prince) {
             uplineDetails.push({
-              ...bco,
-              role: "bco",
+              ...prince,
+              role: "prince",
               roleLabel: "BCO",
             });
           }
-          if (pcs) {
+          if (general) {
             uplineDetails.push({
-              ...pcs,
-              role: "pcs",
+              ...general,
+              role: "general",
               roleLabel: "PCS",
             });
           }
         }
-      } else if (role === "fm") {
+      } else if (role === "member") {
         // fm's upline is the angatchair, bco, pcs and pcl
         const fmResponse = await axios.get(`${process.env.REACT_APP_API_URL}/member`, {
           params: { barangay: selectedBarangay._id },
@@ -288,44 +288,44 @@ export default function SearchPerson() {
 
         if (matchingFm) {
           // Fetch the angatchair, bco, pcs and pcl
-          const angatchair = peopleData.find(
+          const king = peopleData.find(
             (person) => person._id === matchingFm.king_id
           );
-          const bco = peopleData.find(
+          const prince = peopleData.find(
             (person) => person._id === matchingFm.prince_id
           );
-          const pcs = peopleData.find(
+          const general = peopleData.find(
             (person) => person._id === matchingFm.general_id
           );
-          const pcl = peopleData.find(
+          const leader = peopleData.find(
             (person) => person._id === matchingFm.leader_id
           );
 
-          if (angatchair) {
+          if (king) {
             uplineDetails.push({
-              ...angatchair,
-              role: "angatchair",
+              ...king,
+              role: "king",
               roleLabel: "Angat Chair",
             });
           }
-          if (bco) {
+          if (prince) {
             uplineDetails.push({
-              ...bco,
-              role: "bco",
+              ...prince,
+              role: "prince",
               roleLabel: "BCO",
             });
           }
-          if (pcs) {
+          if (general) {
             uplineDetails.push({
-             ...pcs,
-              role: "pcs",
+             ...general,
+              role: "general",
               roleLabel: "PCS",
             });
           }
-          if (pcl) {
+          if (leader) {
             uplineDetails.push({
-             ...pcl,
-              role: "pcl",
+             ...leader,
+              role: "leader",
               roleLabel: "PCL",
             });
           }
@@ -371,10 +371,10 @@ export default function SearchPerson() {
       const { role, _id } = selectedPerson;
       // Determine the endpoint based on the selected person's role
       const roleToDownline = {
-        angatchair: { endpoint: "prince", filterKey: "king_id", roleLabel: "BCO" },
-        bco: { endpoint: "general", filterKey: "prince_id", roleLabel: "PCS" },
-        pcs: { endpoint: "leader", filterKey: "general_id", roleLabel: "PCL" },
-        pcl: { endpoint: "member", filterKey: "leader_id", roleLabel: "FM" },
+        king: { endpoint: "prince", filterKey: "king_id", roleLabel: "BCO" },
+        prince: { endpoint: "general", filterKey: "prince_id", roleLabel: "PCS" },
+        general: { endpoint: "leader", filterKey: "general_id", roleLabel: "PCL" },
+        leader: { endpoint: "member", filterKey: "leader_id", roleLabel: "FM" },
       };
 
       const roleData = roleToDownline[role];
@@ -416,10 +416,10 @@ export default function SearchPerson() {
       }
           // Add endpoint to role mapping
       const ENDPOINT_TO_ROLE = {
-        prince: "bco",
-        general: "pcs",
-        leader: "pcl",
-        member: "fm"
+        prince: "prince",
+        general: "general",
+        leader: "leader",
+        member: "member"
       };
       
       const downlineDetails = downlineData.map((person) => {

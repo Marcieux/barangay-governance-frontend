@@ -75,7 +75,7 @@ export default function GetNames() {
           .filter(
             (person) =>
               person.barangay_id === selectedBarangay._id &&
-              person.role === "bco"
+              person.role === "prince"
           )
           .map((bco) => {
             return {
@@ -151,7 +151,7 @@ export default function GetNames() {
           .filter(
             (person) =>
               person.barangay_id === selectedBarangay._id &&
-              person.role === "pcs"
+              person.role === "general"
           )
           .map((pcs) => ({
             name: pcs.name,
@@ -231,7 +231,7 @@ export default function GetNames() {
           .filter(
             (person) =>
               person.barangay_id === selectedBarangay._id &&
-              person.role === "pcl"
+              person.role === "leader"
           )
           .map((pcl) => ({
             name: pcl.name,
@@ -309,7 +309,7 @@ export default function GetNames() {
           .filter(
             (person) =>
               person.barangay_id === selectedBarangay._id &&
-              person.role === "fm"
+              person.role === "member"
           )
           .map((fm) => ({
             name: fm.name,
