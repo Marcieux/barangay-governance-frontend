@@ -103,7 +103,7 @@ export default function Pcs() {
         )
       ) {
         await axios.put(`${process.env.REACT_APP_API_URL}/people/${pcsId}`, {
-          role: "pcs",
+          role: "general",
         });
 
         await axios.post(`${process.env.REACT_APP_API_URL}/general`, {

@@ -50,7 +50,7 @@ export default function AngatChair() {
     ) {
       try {
         await axios.put(`${process.env.REACT_APP_API_URL}/people/${acId}`, {
-          role: "angatchair",
+          role: "king",
         });
 
         await axios.put(`${process.env.REACT_APP_API_URL}/barangay/${selectedBarangay._id}`, {

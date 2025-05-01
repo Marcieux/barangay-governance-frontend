@@ -150,7 +150,7 @@ export default function FamilyHead() {
         )
       ) {
         await axios.put(`${process.env.REACT_APP_API_URL}/people/${pclId}`, {
-          role: "pcl",
+          role: "leader",
         });
 
         await axios.post(`${process.env.REACT_APP_API_URL}/leader`, {

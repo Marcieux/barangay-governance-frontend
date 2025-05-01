@@ -157,7 +157,7 @@ export default function FamilyGroup() {
         )
       ) {
         await axios.put(`${process.env.REACT_APP_API_URL}/people/${fmId}`, {
-          role: "fm"
+          role: "member"
         });
 
         await axios.post(`${process.env.REACT_APP_API_URL}/member`, {
