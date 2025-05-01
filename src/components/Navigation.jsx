@@ -77,6 +77,17 @@ export default function Navigation() {
             >
               Get Names
             </NavLink>
+            
+            <NavLink 
+              to="/assistance" 
+              className={({ isActive }) => 
+                `px-3 py-2 rounded-md text-sm font-medium ${
+                  isActive ? 'bg-red-500 text-white' : 'text-gray-600 hover:bg-red-100'
+                }`
+              }
+            >
+              Assistance
+            </NavLink>
 
             {/* Encoder Dropdown */}
             <div

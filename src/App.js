@@ -32,6 +32,7 @@ import FamilyGroup from "./pages/encode-names/FamilyGroup";
 import FmList from "./pages/get-names/FmList";
 import PclFmList from "./pages/get-names/PclFmList";
 import { Navigate } from "react-router-dom";
+import Assistance from "./pages/assistance/Assistance";
 function App() {
   useEffect(() => {
     axios
@@ -82,6 +83,7 @@ function App() {
                 <Route path="/search" element={<SearchPerson />} />
                 <Route path="/counter" element={<MunicipalCounter />} />
                 <Route path="/counter/:municipality" element={<BarangayCounter />} />
+                <Route path="/assistance" element={<Assistance/>}/>
               </Route>
 
               {/* Fallback Route */}
